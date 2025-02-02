@@ -10,7 +10,6 @@ namespace Project___ConsoleApp__Library_Management_Application_.Models
     {
         public string Name { get; set; } = null!;
         public string Email { get; set; }
-        public int LoanId { get; set; }
         public List<Loan> Loans { get; set; }
 
 

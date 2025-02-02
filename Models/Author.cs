@@ -8,6 +8,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Models
 {
     public class Author : BaseEntity
     {
-        public List<Book> Books { get; set; }
+        public string Name { get; set; }    
+        public List<Book> Books { get; set; } // Navigation Property
     }
 }
