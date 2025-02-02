@@ -8,6 +8,6 @@ namespace Project___ConsoleApp__Library_Management_Application_.Models
 {
     public class BaseEntity
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
     }
 }
