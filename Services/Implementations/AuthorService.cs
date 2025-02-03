@@ -19,13 +19,13 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
         {
             if (dto == null) throw new AuthorNullException("Author Create DTO is Null ");
             if (string.IsNullOrWhiteSpace(dto.Name)) throw new AuthorNameIsNullOrWhiteSpaceException("Author Name is Null or White Space ");
-
+           
             Author author = new Author()
             {
                 Name = dto.Name,
             };
             authorRepository.Create(author);
-            authorRepository.Commit();
+            authorRepository.SaveChanges();
         }
 
         public void Delete(int id)
@@ -33,7 +33,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
             Author author = authorRepository.GetByIdWithInclude(id);
             if(author is null) throw new AuthorNotFoundException("Author Not Found");
             authorRepository.Delete(author);
-            authorRepository.Commit();
+            authorRepository.SaveChanges();
 
         }
 
@@ -67,6 +67,27 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
                 return dto;
             }
             else return null;
+        }
+
+        public void Update(int id,AuthorUpdateDto dto)
+        {
+      
+            if (dto == null) throw new AuthorNullException("Author Create DTO is Null ");
+            if (string.IsNullOrWhiteSpace(dto.Name)) throw new AuthorNameIsNullOrWhiteSpaceException("Author Name is Null or White Space ");
+            if (!dto.IsDeleted)
+            {
+                var author = authorRepository.GetByIdWithInclude(id);
+                if (author is null) throw new NullReferenceException("Not Found Author");
+                author.Name = dto.Name;
+                author.UpdatedAt = dto.UpdatedAt;
+
+                authorRepository.Commit(author);
+                authorRepository.SaveChanges();
+            }
+            else
+            {
+                throw new NullReferenceException("Not Found Author");
+            }
         }
     }
 }

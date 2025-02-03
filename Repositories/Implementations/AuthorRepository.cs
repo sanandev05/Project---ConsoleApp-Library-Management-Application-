@@ -22,5 +22,8 @@ namespace Project___ConsoleApp__Library_Management_Application_.Repositories.Imp
         {
             return _dbContext.Authors.Include(x=>x.Books).ToList();
         }
+  
+  
+
     }
 }

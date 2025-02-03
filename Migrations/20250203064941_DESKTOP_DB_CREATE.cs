@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Project___ConsoleApp__Library_Management_Application_.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMig : Migration
+    public partial class DESKTOP_DB_CREATE : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,8 +15,12 @@ namespace Project___ConsoleApp__Library_Management_Application_.Migrations
                 name: "Authors",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -27,10 +31,14 @@ namespace Project___ConsoleApp__Library_Management_Application_.Migrations
                 name: "Books",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PublishedYear = table.Column<int>(type: "int", nullable: false)
+                    PublishedYear = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -41,9 +49,13 @@ namespace Project___ConsoleApp__Library_Management_Application_.Migrations
                 name: "Borrowers",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -54,8 +66,8 @@ namespace Project___ConsoleApp__Library_Management_Application_.Migrations
                 name: "AuthorBook",
                 columns: table => new
                 {
-                    AuthorsId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    BooksId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    AuthorsId = table.Column<int>(type: "int", nullable: false),
+                    BooksId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -78,48 +90,54 @@ namespace Project___ConsoleApp__Library_Management_Application_.Migrations
                 name: "Loans",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    BorrowerId1 = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     BorrowerId = table.Column<int>(type: "int", nullable: false),
                     LoanDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     MustReturnDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ReturnDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    ReturnDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Loans", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Loans_Borrowers_BorrowerId1",
-                        column: x => x.BorrowerId1,
+                        name: "FK_Loans_Borrowers_BorrowerId",
+                        column: x => x.BorrowerId,
                         principalTable: "Borrowers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "LoanItem",
+                name: "LoanItems",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     BookId = table.Column<int>(type: "int", nullable: false),
                     LoanId = table.Column<int>(type: "int", nullable: false),
-                    LoanId1 = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    BookId1 = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LoanItem", x => x.Id);
+                    table.PrimaryKey("PK_LoanItems", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_LoanItem_Books_BookId1",
-                        column: x => x.BookId1,
+                        name: "FK_LoanItems_Books_BookId",
+                        column: x => x.BookId,
                         principalTable: "Books",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_LoanItem_Loans_LoanId1",
-                        column: x => x.LoanId1,
+                        name: "FK_LoanItems_Loans_LoanId",
+                        column: x => x.LoanId,
                         principalTable: "Loans",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -128,19 +146,19 @@ namespace Project___ConsoleApp__Library_Management_Application_.Migrations
                 column: "BooksId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LoanItem_BookId1",
-                table: "LoanItem",
-                column: "BookId1");
+                name: "IX_LoanItems_BookId",
+                table: "LoanItems",
+                column: "BookId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LoanItem_LoanId1",
-                table: "LoanItem",
-                column: "LoanId1");
+                name: "IX_LoanItems_LoanId",
+                table: "LoanItems",
+                column: "LoanId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Loans_BorrowerId1",
+                name: "IX_Loans_BorrowerId",
                 table: "Loans",
-                column: "BorrowerId1");
+                column: "BorrowerId");
         }
 
         /// <inheritdoc />
@@ -150,7 +168,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Migrations
                 name: "AuthorBook");
 
             migrationBuilder.DropTable(
-                name: "LoanItem");
+                name: "LoanItems");
 
             migrationBuilder.DropTable(
                 name: "Authors");

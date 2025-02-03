@@ -12,8 +12,8 @@ using Project___ConsoleApp__Library_Management_Application_.Data;
 namespace Project___ConsoleApp__Library_Management_Application_.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250202012921_InitialMig")]
-    partial class InitialMig
+    [Migration("20250203064941_DESKTOP_DB_CREATE")]
+    partial class DESKTOP_DB_CREATE
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,11 +27,11 @@ namespace Project___ConsoleApp__Library_Management_Application_.Migrations
 
             modelBuilder.Entity("AuthorBook", b =>
                 {
-                    b.Property<string>("AuthorsId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("AuthorsId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("BooksId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("BooksId")
+                        .HasColumnType("int");
 
                     b.HasKey("AuthorsId", "BooksId");
 
@@ -42,12 +42,24 @@ namespace Project___ConsoleApp__Library_Management_Application_.Migrations
 
             modelBuilder.Entity("Project___ConsoleApp__Library_Management_Application_.Models.Author", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -56,12 +68,21 @@ namespace Project___ConsoleApp__Library_Management_Application_.Migrations
 
             modelBuilder.Entity("Project___ConsoleApp__Library_Management_Application_.Models.Book", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<int>("PublishedYear")
                         .HasColumnType("int");
@@ -70,6 +91,9 @@ namespace Project___ConsoleApp__Library_Management_Application_.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.ToTable("Books");
@@ -77,16 +101,28 @@ namespace Project___ConsoleApp__Library_Management_Application_.Migrations
 
             modelBuilder.Entity("Project___ConsoleApp__Library_Management_Application_.Models.Borrower", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -95,15 +131,20 @@ namespace Project___ConsoleApp__Library_Management_Application_.Migrations
 
             modelBuilder.Entity("Project___ConsoleApp__Library_Management_Application_.Models.Loan", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("BorrowerId")
                         .HasColumnType("int");
 
-                    b.Property<string>("BorrowerId1")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("LoanDate")
                         .HasColumnType("datetime2");
@@ -114,38 +155,46 @@ namespace Project___ConsoleApp__Library_Management_Application_.Migrations
                     b.Property<DateTime?>("ReturnDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("BorrowerId1");
+                    b.HasIndex("BorrowerId");
 
                     b.ToTable("Loans");
                 });
 
             modelBuilder.Entity("Project___ConsoleApp__Library_Management_Application_.Models.LoanItem", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("BookId")
                         .HasColumnType("int");
 
-                    b.Property<string>("BookId1")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<int>("LoanId")
                         .HasColumnType("int");
 
-                    b.Property<string>("LoanId1")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BookId1");
+                    b.HasIndex("BookId");
 
-                    b.HasIndex("LoanId1");
+                    b.HasIndex("LoanId");
 
-                    b.ToTable("LoanItem");
+                    b.ToTable("LoanItems");
                 });
 
             modelBuilder.Entity("AuthorBook", b =>
@@ -167,7 +216,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Migrations
                 {
                     b.HasOne("Project___ConsoleApp__Library_Management_Application_.Models.Borrower", "Borrower")
                         .WithMany("Loans")
-                        .HasForeignKey("BorrowerId1")
+                        .HasForeignKey("BorrowerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -178,13 +227,15 @@ namespace Project___ConsoleApp__Library_Management_Application_.Migrations
                 {
                     b.HasOne("Project___ConsoleApp__Library_Management_Application_.Models.Book", "Book")
                         .WithMany()
-                        .HasForeignKey("BookId1")
+                        .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Project___ConsoleApp__Library_Management_Application_.Models.Loan", "Loan")
                         .WithMany("LoanItems")
-                        .HasForeignKey("LoanId1");
+                        .HasForeignKey("LoanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Book");
 

@@ -23,5 +23,6 @@ namespace Project___ConsoleApp__Library_Management_Application_.Repositories.Imp
         {
             return _dbContext.LoanItems.Include(x => x.Loan).Include(x => x.Book).ToList();
         }
+       
     }
 }

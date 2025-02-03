@@ -33,7 +33,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
             };
 
             borrowerRepository.Create(borrower);
-            borrowerRepository.Commit();
+            borrowerRepository.SaveChanges();
         }
 
         public void Delete(int id)
@@ -42,7 +42,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
 
             Borrower borrower =borrowerRepository.GetByIdWithInclude(id);
             borrowerRepository.Delete(borrower);
-            borrowerRepository.Commit();
+            borrowerRepository.SaveChanges();
 
         }
 
@@ -78,6 +78,28 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
                 return dto;
             }
             return null;
+        }
+
+        public void Update(BorrowerUpdateDto dto)
+        {
+            BorrowerRepository borrowerRepository = new BorrowerRepository();
+
+            if (string.IsNullOrWhiteSpace(dto.Name) || string.IsNullOrWhiteSpace(dto.Email))
+                throw new BorrowerNameOrEmailNullOrWhiteSpaceException("Borrower Name Or Email is Null Or White Space");
+
+            if (!dto.IsDeleted)
+            {
+                Borrower borrower = new Borrower()
+                {
+                    Name = dto.Name,
+                    Email = dto.Email,
+                    IsDeleted = dto.IsDeleted,
+                    Loans = dto.Loans,
+                };
+                borrowerRepository.Commit(borrower);
+                borrowerRepository.SaveChanges();
+            }
+            else throw new NullReferenceException("Not Found Borrower");
         }
     }
 }

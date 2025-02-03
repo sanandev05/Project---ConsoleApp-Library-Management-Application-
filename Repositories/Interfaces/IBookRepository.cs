@@ -13,6 +13,8 @@ namespace Project___ConsoleApp__Library_Management_Application_.Repositories.Int
         public void Delete(Book entity);
         public Book GetByIdWithInclude(int id);
         public List<Book> GetAllWithInclude();
-        int Commit();
+        int Commit(Book book);
+        int SaveChanges();
+
     }
 }

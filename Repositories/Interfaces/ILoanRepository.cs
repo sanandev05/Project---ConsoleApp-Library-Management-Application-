@@ -14,6 +14,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Repositories.Int
 
         public Loan GetByIdWithInclude(int id);
         public List<Loan> GetAllWithInclude();
-        int Commit();
+        int Commit(Loan loan);
+        int SaveChanges();
     }
 }

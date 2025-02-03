@@ -32,7 +32,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
             };
 
             _loanItemRepository.Create(loanItem);
-            _loanItemRepository.Commit();
+            _loanItemRepository.SaveChanges();
         }
 
         public void Delete(int id)
@@ -52,7 +52,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
             };
 
             _loanItemRepository.Delete(loan);
-            _loanItemRepository.Commit();
+            _loanItemRepository.SaveChanges();
         }
 
         public List<LoanItemGetDto> GetAll()
@@ -90,6 +90,29 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
             {
                 return null;
             }
+        }
+
+        public void Update(LoanItemUpdateDto dto)
+        {
+            LoanItemRepository loanItemRepo = new LoanItemRepository();
+            if (dto == null) throw new ArgumentNullException("LoanItem is null");
+
+            if (!dto.IsDeleted)
+            {
+                LoanItem loanItem = new LoanItem()
+                {
+                    BookId = dto.BookId,
+                    LoanId = dto.LoanId,
+                    Book = dto.Book,
+                    Loan = dto.Loan,
+                    IsDeleted = dto.IsDeleted,
+                    UpdatedAt = dto.UpdatedAt,
+                };
+
+                loanItemRepo.Commit(loanItem);
+                loanItemRepo.SaveChanges();
+            }
+            else throw new NullReferenceException("Not Found LoanItem");
         }
     }
 }

@@ -14,6 +14,8 @@ namespace Project___ConsoleApp__Library_Management_Application_.Repositories.Int
         public void Delete(Author entity);
         public Author GetByIdWithInclude(int id);
         public List<Author> GetAllWithInclude();
-        int Commit();
+        public int Commit(Author author);
+        int SaveChanges();
+
     }
 }

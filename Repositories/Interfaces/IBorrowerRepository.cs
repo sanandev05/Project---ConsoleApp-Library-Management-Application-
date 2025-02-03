@@ -13,6 +13,8 @@ namespace Project___ConsoleApp__Library_Management_Application_.Repositories.Int
         public void Delete(Borrower entity);
         public List<Borrower> GetAllWithInclude();
         public Borrower GetByIdWithInclude(int id);
-        int Commit();
+        int Commit(Borrower borrower);
+        int SaveChanges();
+
     }
 }

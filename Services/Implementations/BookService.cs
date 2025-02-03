@@ -39,7 +39,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
             book.IsDeleted = entity.IsDeleted;
             bookRepository.Create(book);
 
-            bookRepository.Commit();
+            bookRepository.SaveChanges();
         }
 
         public void Delete(int id)
@@ -47,7 +47,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
             Book book =bookRepository.GetByIdWithInclude(id);
             if (book is null) throw new AuthorNotFoundException("Book Not Found");
             bookRepository.Delete(book);
-            bookRepository.Commit();
+            bookRepository.SaveChanges();
 
         }
 
@@ -87,6 +87,32 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
                 return dto;
             }
             else return null;
+        }
+
+        public void Update(BookUpdateDto dto)
+        {
+            BookRepository bookRepository = new BookRepository();
+            if (dto == null) throw new BookNullException("Book is Null ");
+
+            if (string.IsNullOrWhiteSpace(dto.Title)
+                || string.IsNullOrWhiteSpace(dto.Description)) throw new BookTitleOrDescriptionIsNullOrWhiteSpaceException();
+
+            if (dto.PublishYear < 1000) throw new BookPublishedYearNotTrueException("Book Publish Year is not True");
+
+            if (!dto.IsDeleted)
+            {
+                Book book = new Book()
+                {
+                    Title = dto.Title,
+                    Description = dto.Description,
+                    UpdatedAt = dto.UpdatedAt,
+                    PublishedYear = dto.PublishYear
+                };
+
+                bookRepository.Commit(book);
+                bookRepository.SaveChanges();
+            }
+            else throw new NullReferenceException("Not Found Book");
         }
     }
 }

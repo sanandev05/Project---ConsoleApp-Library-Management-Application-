@@ -12,6 +12,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Interfa
     {
         public void Create(LoanCreateDto dto);
         public void Delete(int id);
+        public void Update(LoanUpdateDto dto);
         LoanGetDto GetById(int id);
         List<LoanGetDto> GetAll();
     }

@@ -33,7 +33,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
                 ReturnDate = dto.ReturnDate,
             };
             loanRepository.Create(loan);
-            loanRepository.Commit();
+            loanRepository.SaveChanges();
         }
 
         public void Delete(int id)
@@ -55,7 +55,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
             };
 
             loanRepository.Delete(loan);
-            loanRepository.Commit();
+            loanRepository.SaveChanges();
         }
 
         public List<LoanGetDto> GetAll()
@@ -94,6 +94,30 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
                 return dto;
             }
             return null;
+        }
+
+        public void Update(LoanUpdateDto dto)
+        {
+            LoanRepository loanRepository = new LoanRepository();
+            if (dto.BorrowerId < 1) throw new IdNotTrueException(" Id cant be zero and less than 0");
+
+            if (!dto.IsDeleted)
+            {
+                Loan loan = new Loan()
+                {
+                    BorrowerId = dto.BorrowerId,
+                    Borrower = dto.Borrower,
+                    LoanItems = dto.LoanItems,
+                    LoanDate = dto.LoanDate,
+                    IsDeleted = dto.IsDeleted,
+                    UpdatedAt = dto.UpdatedAt,
+                    MustReturnDate = dto.MustReturnDate,
+                    ReturnDate = dto.ReturnDate,
+                };
+                loanRepository.Commit(loan);
+                loanRepository.SaveChanges();
+            }
+            throw new NullReferenceException("Not Found Loan");
         }
     }
 }

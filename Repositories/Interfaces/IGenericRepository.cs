@@ -13,7 +13,8 @@ namespace Project___ConsoleApp__Library_Management_Application_.Repositories.Int
         public void Delete(T entity);
         T GetById(int id);
         List<T> GetAll();
-        int Commit();
+        int Commit(T entity);
+        int SaveChanges();
 
     }
 }
