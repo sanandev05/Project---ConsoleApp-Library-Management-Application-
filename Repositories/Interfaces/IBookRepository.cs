@@ -11,8 +11,8 @@ namespace Project___ConsoleApp__Library_Management_Application_.Repositories.Int
     {
         public void Create(Book entity);
         public void Delete(Book entity);
-        Book GetById(int id);
-        List<Book> GetAll();
+        public Book GetByIdWithInclude(int id);
+        public List<Book> GetAllWithInclude();
         int Commit();
     }
 }

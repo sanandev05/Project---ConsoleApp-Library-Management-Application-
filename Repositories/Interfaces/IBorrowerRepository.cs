@@ -11,8 +11,8 @@ namespace Project___ConsoleApp__Library_Management_Application_.Repositories.Int
     {
         public void Create(Borrower entity);
         public void Delete(Borrower entity);
-        Borrower GetById(int id);
-        List<Borrower> GetAll();
+        public List<Borrower> GetAllWithInclude();
+        public Borrower GetByIdWithInclude(int id);
         int Commit();
     }
 }

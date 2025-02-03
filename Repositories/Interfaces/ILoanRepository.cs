@@ -11,8 +11,9 @@ namespace Project___ConsoleApp__Library_Management_Application_.Repositories.Int
     {
         public void Create(Loan entity);
         public void Delete(Loan entity);
-        Loan GetById(int id);
-        List<Loan> GetAll();
+
+        public Loan GetByIdWithInclude(int id);
+        public List<Loan> GetAllWithInclude();
         int Commit();
     }
 }

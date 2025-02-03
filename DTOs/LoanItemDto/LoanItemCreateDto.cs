@@ -13,5 +13,9 @@ namespace Project___ConsoleApp__Library_Management_Application_.DTOs.LoanItemDto
         public int LoanId { get; set; }
         public Loan Loan { get; set; } // Navigation Property
         public Book Book { get; set; } // Navigation Property
+
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

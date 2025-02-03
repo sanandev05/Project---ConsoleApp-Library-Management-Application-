@@ -16,5 +16,9 @@ namespace Project___ConsoleApp__Library_Management_Application_.DTOs.LoanDto
         public DateTime LoanDate { get; set; }
         public DateTime MustReturnDate { get; set; }
         public DateTime? ReturnDate { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }
