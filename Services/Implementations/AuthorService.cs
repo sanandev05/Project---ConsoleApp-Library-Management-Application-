@@ -25,7 +25,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
                 Name = dto.Name,
             };
             authorRepository.Create(author);
-
+            authorRepository.Commit();
         }
 
         public void Delete(int id)
@@ -33,11 +33,13 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
             Author author = authorRepository.GetByIdWithInclude(id);
             if(author is null) throw new AuthorNotFoundException("Author Not Found");
             authorRepository.Delete(author);
+            authorRepository.Commit();
+
         }
 
         public List<AuthorGetDto> GetAll()
         {
-            var get = authorRepository.GetAllWithInclude();
+            var get = authorRepository.GetAllWithInclude().Where(x=>!x.IsDeleted);
             var data=new List<AuthorGetDto>();
             return data = get.Select(x => new AuthorGetDto()
             {
@@ -52,15 +54,19 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
         public AuthorGetDto GetById(int id)
         {
             var get=authorRepository.GetByIdWithInclude(id);
-            AuthorGetDto dto = new AuthorGetDto()
+            if (!get.IsDeleted)
             {
-                Name = get.Name,
-                CreatedAt = get.CreatedAt,
-                Id = id,
-                IsDeleted = get.IsDeleted,
-                UpdatedAt = get.UpdatedAt
-            };
-            return dto;
+                AuthorGetDto dto = new AuthorGetDto()
+                {
+                    Name = get.Name,
+                    CreatedAt = get.CreatedAt,
+                    Id = id,
+                    IsDeleted = get.IsDeleted,
+                    UpdatedAt = get.UpdatedAt
+                };
+                return dto;
+            }
+            else return null;
         }
     }
 }

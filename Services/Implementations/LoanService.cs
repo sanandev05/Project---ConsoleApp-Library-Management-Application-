@@ -33,6 +33,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
                 ReturnDate = dto.ReturnDate,
             };
             loanRepository.Create(loan);
+            loanRepository.Commit();
         }
 
         public void Delete(int id)
@@ -54,11 +55,12 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
             };
 
             loanRepository.Delete(loan);
+            loanRepository.Commit();
         }
 
         public List<LoanGetDto> GetAll()
         {
-            return loanRepository.GetAllWithInclude().Select(x => new LoanGetDto()
+            return loanRepository.GetAllWithInclude().Where(x=>!x.IsDeleted).Select(x => new LoanGetDto()
             {
                 BorrowerId = x.BorrowerId,
                 Borrower = x.Borrower,
@@ -75,19 +77,23 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
         public LoanGetDto GetById(int id)
         {
             var get = loanRepository.GetByIdWithInclude(id);
-            LoanGetDto dto = new LoanGetDto()
+            if (!get.IsDeleted)
             {
-                BorrowerId = get.BorrowerId,
-                Borrower = get.Borrower,
-                LoanItems = get.LoanItems,
-                LoanDate = get.LoanDate,
-                IsDeleted = get.IsDeleted,
-                CreatedAt = get.CreatedAt,
-                UpdatedAt = get.UpdatedAt,
-                MustReturnDate = get.MustReturnDate,
-                ReturnDate = get.ReturnDate,
-            };
-            return dto;
+                LoanGetDto dto = new LoanGetDto()
+                {
+                    BorrowerId = get.BorrowerId,
+                    Borrower = get.Borrower,
+                    LoanItems = get.LoanItems,
+                    LoanDate = get.LoanDate,
+                    IsDeleted = get.IsDeleted,
+                    CreatedAt = get.CreatedAt,
+                    UpdatedAt = get.UpdatedAt,
+                    MustReturnDate = get.MustReturnDate,
+                    ReturnDate = get.ReturnDate,
+                };
+                return dto;
+            }
+            return null;
         }
     }
 }

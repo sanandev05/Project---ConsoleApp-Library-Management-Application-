@@ -33,6 +33,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
             };
 
             borrowerRepository.Create(borrower);
+            borrowerRepository.Commit();
         }
 
         public void Delete(int id)
@@ -41,12 +42,13 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
 
             Borrower borrower =borrowerRepository.GetByIdWithInclude(id);
             borrowerRepository.Delete(borrower);
-            
+            borrowerRepository.Commit();
+
         }
 
         public List<BorrowerGetDto> GetAll()
         {
-            var get = borrowerRepository.GetAllWithInclude();
+            var get = borrowerRepository.GetAllWithInclude().Where(x => !x.IsDeleted);
             var data = new List<BorrowerGetDto>();
             return data = get.Select(x => new BorrowerGetDto()
             {
@@ -62,16 +64,20 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
         public BorrowerGetDto GetById(int id)
         {
             var get = borrowerRepository.GetByIdWithInclude(id);
-            BorrowerGetDto dto = new BorrowerGetDto()
+            if (!get.IsDeleted)
             {
-                Id = get.Id,
-                Name = get.Name,
-                Email = get.Email,
-                IsDeleted = get.IsDeleted,
-                CreatedAt = get.CreatedAt,
-                UpdatedAt = get.UpdatedAt,
-            };
-            return dto;
+                BorrowerGetDto dto = new BorrowerGetDto()
+                {
+                    Id = get.Id,
+                    Name = get.Name,
+                    Email = get.Email,
+                    IsDeleted = get.IsDeleted,
+                    CreatedAt = get.CreatedAt,
+                    UpdatedAt = get.UpdatedAt,
+                };
+                return dto;
+            }
+            return null;
         }
     }
 }

@@ -32,6 +32,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
             };
 
             _loanItemRepository.Create(loanItem);
+            _loanItemRepository.Commit();
         }
 
         public void Delete(int id)
@@ -51,11 +52,12 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
             };
 
             _loanItemRepository.Delete(loan);
+            _loanItemRepository.Commit();
         }
 
         public List<LoanItemGetDto> GetAll()
         {
-            return _loanItemRepository.GetAllWithInclude().Select(x => new LoanItemGetDto()
+            return _loanItemRepository.GetAllWithInclude().Where(x => !x.IsDeleted).Select(x => new LoanItemGetDto()
             {
                 BookId = x.BookId,
                 LoanId = x.LoanId,
@@ -70,17 +72,24 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
         public LoanItemGetDto GetById(int id)
         {
             var get = _loanItemRepository.GetByIdWithInclude(id);
-            LoanItemGetDto dto = new LoanItemGetDto()
+            if (!get.IsDeleted)
             {
-                BookId = get.BookId,
-                LoanId = get.LoanId,
-                Book = get.Book,
-                Loan = get.Loan,
-                IsDeleted = get.IsDeleted,
-                CreatedAt = get.CreatedAt,
-                UpdatedAt = get.UpdatedAt,
-            };
-            return dto;
+                LoanItemGetDto dto = new LoanItemGetDto()
+                {
+                    BookId = get.BookId,
+                    LoanId = get.LoanId,
+                    Book = get.Book,
+                    Loan = get.Loan,
+                    IsDeleted = get.IsDeleted,
+                    CreatedAt = get.CreatedAt,
+                    UpdatedAt = get.UpdatedAt,
+                };
+                return dto;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

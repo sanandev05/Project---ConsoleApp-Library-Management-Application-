@@ -38,6 +38,8 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
             book.Authors = entity.Authors;
             book.IsDeleted = entity.IsDeleted;
             bookRepository.Create(book);
+
+            bookRepository.Commit();
         }
 
         public void Delete(int id)
@@ -45,11 +47,13 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
             Book book =bookRepository.GetByIdWithInclude(id);
             if (book is null) throw new AuthorNotFoundException("Book Not Found");
             bookRepository.Delete(book);
+            bookRepository.Commit();
+
         }
 
         public List<BookGetDto> GetAll()
         {
-            var get = bookRepository.GetAllWithInclude();
+            var get = bookRepository.GetAllWithInclude().Where(x=>!x.IsDeleted);
             var data = new List<BookGetDto>();
             return data = get.Select(x => new BookGetDto()
             {
@@ -67,18 +71,22 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
         public BookGetDto GetById(int id)
         {
             var get = bookRepository.GetByIdWithInclude(id);
-            BookGetDto dto = new BookGetDto()
+            if (!get.IsDeleted)
             {
-                Title = get.Title,
-                CreatedAt = get.CreatedAt,
-                Id = id,
-                IsDeleted = get.IsDeleted,
-                UpdatedAt = get.UpdatedAt,
-                Description = get.Description,
-                Authors = get.Authors,
-                PublishYear = get.PublishedYear,
-            };
-            return dto;
+                BookGetDto dto = new BookGetDto()
+                {
+                    Title = get.Title,
+                    CreatedAt = get.CreatedAt,
+                    Id = id,
+                    IsDeleted = get.IsDeleted,
+                    UpdatedAt = get.UpdatedAt,
+                    Description = get.Description,
+                    Authors = get.Authors,
+                    PublishYear = get.PublishedYear,
+                };
+                return dto;
+            }
+            else return null;
         }
     }
 }
