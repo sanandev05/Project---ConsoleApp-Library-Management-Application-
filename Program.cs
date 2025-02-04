@@ -2,6 +2,7 @@
 using Project___ConsoleApp__Library_Management_Application_.DTOs;
 using Project___ConsoleApp__Library_Management_Application_.DTOs.AuthorDto;
 using Project___ConsoleApp__Library_Management_Application_.DTOs.BookDto;
+using Project___ConsoleApp__Library_Management_Application_.DTOs.BorrowerDto;
 using Project___ConsoleApp__Library_Management_Application_.Services.Implementations;
 using Project___ConsoleApp__Library_Management_Application_.Services.Interfaces;
 
@@ -11,7 +12,7 @@ namespace Project___ConsoleApp__Library_Management_Application_
     {
         static void Main(string[] args)
         {
-            AuthorActions(3);
+            BookActions(4);
         }
         static void AuthorActions(int cmd)
         {
@@ -134,6 +135,73 @@ namespace Project___ConsoleApp__Library_Management_Application_
                     Console.Write("Enter the ID Correctly:");
                     int Id = int.Parse(Console.ReadLine());
                     bookService.Delete(Id);
+                    break;
+                case 0:
+                    // WRITE 
+                    break;
+                default:
+                    break;
+            }
+        }
+        static void BorrowerActions(int cmd)
+        {
+            IBorrowerService borrowerService = new BorrowerService();
+            switch (cmd)
+            {
+                case 1:
+                    Console.WriteLine("List of Borrowers:\n");
+                    var datas = borrowerService.GetAll();
+                    if (!datas.IsNullOrEmpty())
+                        foreach (var item in datas)
+                        {
+                            Console.WriteLine($"{item.Id} {item.Name} {item.Email} {item.CreatedAt} {item.UpdatedAt} {item.IsDeleted}");
+                        }
+                    else Console.WriteLine("There is nothing in the Books List");
+                    break;
+
+                case 2:
+                    Console.WriteLine("Creating Borrower:\n");
+
+                    Console.Write("Name of the Borrower :");
+                    string name = Console.ReadLine();
+
+                    Console.Write("Email of Borrower :");
+                    string email = Console.ReadLine();
+
+                    BorrowerCreateDto borrowerCreateDto = new BorrowerCreateDto()
+                    {
+                        Name = name,
+                        IsDeleted = false,
+                        Email = email,
+                        CreatedAt = DateTime.Now.AddHours(4),
+                        UpdatedAt = DateTime.Now.AddHours(4),
+                    };
+                    borrowerService.Create(borrowerCreateDto);
+                    break;
+                case 3:
+                    Console.Write("Enter ID of Borrower to Modify:");
+                    int ID = int.Parse(Console.ReadLine());
+
+                    Console.Write("New Name of the Borrower :");
+                    string updatedName = Console.ReadLine();
+
+                    Console.Write("New Email of the Borrower :");
+                    string updatedEmail = Console.ReadLine();
+
+                    BorrowerUpdateDto borrowerUpdateDto = new BorrowerUpdateDto()
+                    {
+                        Name = updatedName,
+                        IsDeleted = false,
+                        Email = updatedEmail,
+                        UpdatedAt = DateTime.Now.AddHours(4),
+                    };
+                    borrowerService.Update(borrowerUpdateDto);
+                    break;
+                case 4:
+                    Console.WriteLine("Deleting an Borrower:\n");
+                    Console.Write("Enter the Borrower ID Correctly:");
+                    int Id = int.Parse(Console.ReadLine());
+                    borrowerService.Delete(Id);
                     break;
                 case 0:
                     // WRITE 
