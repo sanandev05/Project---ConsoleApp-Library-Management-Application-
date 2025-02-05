@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Project___ConsoleApp__Library_Management_Application_.DTOs.LoanDto;
@@ -59,6 +60,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
         {
             return _loanItemRepository.GetAllWithInclude().Where(x => !x.IsDeleted).Select(x => new LoanItemGetDto()
             {
+                Id = x.Id,
                 BookId = x.BookId,
                 LoanId = x.LoanId,
                 Book = x.Book,
@@ -76,6 +78,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
             {
                 LoanItemGetDto dto = new LoanItemGetDto()
                 {
+                    Id = id,
                     BookId = get.BookId,
                     LoanId = get.LoanId,
                     Book = get.Book,
@@ -92,22 +95,20 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
             }
         }
 
-        public void Update(LoanItemUpdateDto dto)
+        public void Update(int id, LoanItemUpdateDto dto)
         {
             LoanItemRepository loanItemRepo = new LoanItemRepository();
             if (dto == null) throw new ArgumentNullException("LoanItem is null");
 
             if (!dto.IsDeleted)
             {
-                LoanItem loanItem = new LoanItem()
-                {
-                    BookId = dto.BookId,
-                    LoanId = dto.LoanId,
-                    Book = dto.Book,
-                    Loan = dto.Loan,
-                    IsDeleted = dto.IsDeleted,
-                    UpdatedAt = dto.UpdatedAt,
-                };
+                LoanItem loanItem = loanItemRepo.GetByIdWithInclude(id);
+                loanItem.Id = id;
+                loanItem.BookId = dto.BookId;
+                loanItem.LoanId = dto.LoanId;
+                loanItem.Book = dto.Book;
+                loanItem.Loan = dto.Loan;
+                loanItem.IsDeleted = dto.IsDeleted;
 
                 loanItemRepo.Commit(loanItem);
                 loanItemRepo.SaveChanges();

@@ -16,24 +16,24 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
 {
     public class BookService : IBookService
     {
-            IBookRepository bookRepository = new BookRepository();
+        IBookRepository bookRepository = new BookRepository();
         public void Create(BookCreateDto entity)
         {
             if (entity == null) throw new BookNullException("Book is Null ");
-            
+
             if (string.IsNullOrWhiteSpace(entity.Title)
                 || string.IsNullOrWhiteSpace(entity.Description)) throw new BookTitleOrDescriptionIsNullOrWhiteSpaceException();
-            
-            if(entity.PublishYear<1000) throw new BookPublishedYearNotTrueException("Book Publish Year is not True");
+
+            if (entity.PublishYear < 1000) throw new BookPublishedYearNotTrueException("Book Publish Year is not True");
 
             Book book = new Book()
             {
                 Title = entity.Title,
                 Description = entity.Description,
                 CreatedAt = entity.CreatedAt,
-                UpdatedAt = entity.UpdatedAt,                
+                UpdatedAt = entity.UpdatedAt,
                 PublishedYear = entity.PublishYear
-                
+
             };
             book.Authors = entity.Authors;
             book.IsDeleted = entity.IsDeleted;
@@ -44,7 +44,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
 
         public void Delete(int id)
         {
-            Book book =bookRepository.GetByIdWithInclude(id);
+            Book book = bookRepository.GetByIdWithInclude(id);
             if (book is null) throw new AuthorNotFoundException("Book Not Found");
             bookRepository.Delete(book);
             bookRepository.SaveChanges();
@@ -53,7 +53,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
 
         public List<BookGetDto> GetAll()
         {
-            var get = bookRepository.GetAllWithInclude().Where(x=>!x.IsDeleted);
+            var get = bookRepository.GetAllWithInclude().Where(x => !x.IsDeleted);
             var data = new List<BookGetDto>();
             return data = get.Select(x => new BookGetDto()
             {
@@ -89,7 +89,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
             else return null;
         }
 
-        public void Update(BookUpdateDto dto)
+        public void Update(int id, BookUpdateDto dto)
         {
             BookRepository bookRepository = new BookRepository();
             if (dto == null) throw new BookNullException("Book is Null ");
@@ -101,13 +101,11 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
 
             if (!dto.IsDeleted)
             {
-                Book book = new Book()
-                {
-                    Title = dto.Title,
-                    Description = dto.Description,
-                    UpdatedAt = dto.UpdatedAt,
-                    PublishedYear = dto.PublishYear
-                };
+                Book book = bookRepository.GetByIdWithInclude(id);
+                book.Title = dto.Title;
+                book.Description = dto.Description;
+                book.UpdatedAt = dto.UpdatedAt;
+                book.PublishedYear = dto.PublishYear;
 
                 bookRepository.Commit(book);
                 bookRepository.SaveChanges();

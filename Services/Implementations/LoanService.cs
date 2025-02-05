@@ -15,7 +15,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
 {
     public class LoanService : ILoanService
     {
-        ILoanRepository loanRepository =new LoanRepository();
+        ILoanRepository loanRepository = new LoanRepository();
         public void Create(LoanCreateDto dto)
         {
             if (dto.BorrowerId < 1) throw new IdNotTrueException(" Id cant be zero and less than 0");
@@ -39,7 +39,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
         public void Delete(int id)
         {
             if (id < 1) throw new IdNotTrueException(" Id cant be zero and less than 0");
-            var dto=loanRepository.GetByIdWithInclude(id);
+            var dto = loanRepository.GetByIdWithInclude(id);
 
             var loan = new Loan()
             {
@@ -60,8 +60,9 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
 
         public List<LoanGetDto> GetAll()
         {
-            return loanRepository.GetAllWithInclude().Where(x=>!x.IsDeleted).Select(x => new LoanGetDto()
+            return loanRepository.GetAllWithInclude().Where(x => !x.IsDeleted).Select(x => new LoanGetDto()
             {
+                Id = x.Id,
                 BorrowerId = x.BorrowerId,
                 Borrower = x.Borrower,
                 LoanItems = x.LoanItems,
@@ -96,28 +97,28 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
             return null;
         }
 
-        public void Update(LoanUpdateDto dto)
+        public void Update(int id, LoanUpdateDto dto)
         {
             LoanRepository loanRepository = new LoanRepository();
             if (dto.BorrowerId < 1) throw new IdNotTrueException(" Id cant be zero and less than 0");
 
             if (!dto.IsDeleted)
             {
-                Loan loan = new Loan()
-                {
-                    BorrowerId = dto.BorrowerId,
-                    Borrower = dto.Borrower,
-                    LoanItems = dto.LoanItems,
-                    LoanDate = dto.LoanDate,
-                    IsDeleted = dto.IsDeleted,
-                    UpdatedAt = dto.UpdatedAt,
-                    MustReturnDate = dto.MustReturnDate,
-                    ReturnDate = dto.ReturnDate,
-                };
+                Loan loan = loanRepository.GetByIdWithInclude(id);
+
+                loan.BorrowerId = dto.BorrowerId;
+                loan.Borrower = dto.Borrower;
+                loan.LoanItems = dto.LoanItems;
+                loan.LoanDate = dto.LoanDate;
+                loan.IsDeleted = dto.IsDeleted;
+                loan.UpdatedAt = dto.UpdatedAt;
+                loan.MustReturnDate = dto.MustReturnDate;
+                loan.ReturnDate = dto.ReturnDate;
+
                 loanRepository.Commit(loan);
                 loanRepository.SaveChanges();
             }
-            throw new NullReferenceException("Not Found Loan");
+            else { throw new NullReferenceException("Not Found Loan"); }
         }
     }
 }

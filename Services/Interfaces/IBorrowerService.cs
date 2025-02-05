@@ -13,7 +13,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Interfa
     {
         public void Create(BorrowerCreateDto entity);
         public void Delete(int id);
-        public void Update(BorrowerUpdateDto dto);
+        public void Update(int id,BorrowerUpdateDto dto);
         BorrowerGetDto GetById(int id);
         List<BorrowerGetDto> GetAll();
     }

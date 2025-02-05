@@ -16,11 +16,11 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
 {
     public class BorrowerService : IBorrowerService
     {
-        IBorrowerRepository borrowerRepository = new BorrowerRepository(); 
+        IBorrowerRepository borrowerRepository = new BorrowerRepository();
         public void Create(BorrowerCreateDto entity)
         {
             if (string.IsNullOrWhiteSpace(entity.Name) || string.IsNullOrWhiteSpace(entity.Email))
-            throw new BorrowerNameOrEmailNullOrWhiteSpaceException("Borrower Name Or Email is Null Or White Space");
+                throw new BorrowerNameOrEmailNullOrWhiteSpaceException("Borrower Name Or Email is Null Or White Space");
 
             Borrower borrower = new Borrower()
             {
@@ -38,9 +38,9 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
 
         public void Delete(int id)
         {
-            if (id < 1) throw new IdNotTrueException("Id cant be zero or below it !"); 
+            if (id < 1) throw new IdNotTrueException("Id cant be zero or below it !");
 
-            Borrower borrower =borrowerRepository.GetByIdWithInclude(id);
+            Borrower borrower = borrowerRepository.GetByIdWithInclude(id);
             borrowerRepository.Delete(borrower);
             borrowerRepository.SaveChanges();
 
@@ -52,12 +52,12 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
             var data = new List<BorrowerGetDto>();
             return data = get.Select(x => new BorrowerGetDto()
             {
-               Id = x.Id, 
-               Name = x.Name,
-               Email = x.Email,
-               IsDeleted = x.IsDeleted,
-               CreatedAt= x.CreatedAt,
-               UpdatedAt= x.UpdatedAt,
+                Id = x.Id,
+                Name = x.Name,
+                Email = x.Email,
+                IsDeleted = x.IsDeleted,
+                CreatedAt = x.CreatedAt,
+                UpdatedAt = x.UpdatedAt,
             }).ToList();
         }
 
@@ -80,7 +80,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
             return null;
         }
 
-        public void Update(BorrowerUpdateDto dto)
+        public void Update(int id, BorrowerUpdateDto dto)
         {
             BorrowerRepository borrowerRepository = new BorrowerRepository();
 
@@ -89,13 +89,12 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
 
             if (!dto.IsDeleted)
             {
-                Borrower borrower = new Borrower()
-                {
-                    Name = dto.Name,
-                    Email = dto.Email,
-                    IsDeleted = dto.IsDeleted,
-                    Loans = dto.Loans,
-                };
+                Borrower borrower = borrowerRepository.GetByIdWithInclude(id);
+                borrower.Name = dto.Name;
+                borrower.Email = dto.Email;
+                borrower.IsDeleted = dto.IsDeleted;
+                borrower.Loans = dto.Loans;
+
                 borrowerRepository.Commit(borrower);
                 borrowerRepository.SaveChanges();
             }

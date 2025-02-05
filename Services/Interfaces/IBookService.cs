@@ -13,7 +13,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Interfa
     {
         public void Create(BookCreateDto entity);
         public void Delete(int id);
-        public void Update(BookUpdateDto dto);
+        public void Update(int id,BookUpdateDto dto);
 
         BookGetDto GetById(int id);
         List<BookGetDto> GetAll();
