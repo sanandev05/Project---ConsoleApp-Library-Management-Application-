@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Project___ConsoleApp__Library_Management_Application_.Migrations
 {
     /// <inheritdoc />
-    public partial class DESKTOP_DB_CREATE : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

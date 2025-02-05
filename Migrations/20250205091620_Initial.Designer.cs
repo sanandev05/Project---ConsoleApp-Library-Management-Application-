@@ -12,8 +12,8 @@ using Project___ConsoleApp__Library_Management_Application_.Data;
 namespace Project___ConsoleApp__Library_Management_Application_.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250203064941_DESKTOP_DB_CREATE")]
-    partial class DESKTOP_DB_CREATE
+    [Migration("20250205091620_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

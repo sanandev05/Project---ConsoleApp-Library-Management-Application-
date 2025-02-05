@@ -43,11 +43,12 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
 
             var loan = new Loan()
             {
+                Id = id,
                 BorrowerId = dto.BorrowerId,
                 Borrower = dto.Borrower,
                 LoanItems = dto.LoanItems,
                 LoanDate = dto.LoanDate,
-                IsDeleted = dto.IsDeleted,
+                IsDeleted = dto.IsDeleted,              
                 CreatedAt = dto.CreatedAt,
                 UpdatedAt = dto.UpdatedAt,
                 MustReturnDate = dto.MustReturnDate,

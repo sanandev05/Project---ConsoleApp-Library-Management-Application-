@@ -17,6 +17,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
     public class BookService : IBookService
     {
         IBookRepository bookRepository = new BookRepository();
+        IAuthorRepository authorRepository = new AuthorRepository();
         public void Create(BookCreateDto entity)
         {
             if (entity == null) throw new BookNullException("Book is Null ");
@@ -33,13 +34,13 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
                 CreatedAt = entity.CreatedAt,
                 UpdatedAt = entity.UpdatedAt,
                 PublishedYear = entity.PublishYear
-
             };
             book.Authors = entity.Authors;
             book.IsDeleted = entity.IsDeleted;
-            bookRepository.Create(book);
 
-            bookRepository.SaveChanges();
+           bookRepository.Create(book);
+            
+
         }
 
         public void Delete(int id)
@@ -111,6 +112,21 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
                 bookRepository.SaveChanges();
             }
             else throw new NullReferenceException("Not Found Book");
+        }
+        public void CreateBookWithAuthor(int authorId)
+        {
+
+        }
+        public int MostLoanedBookID()
+        {
+            ILoanItemRepository loanItemRepository = new LoanItemRepository();
+           var mostBorrowedBook= loanItemRepository.GetAllWithInclude()
+                              .GroupBy(x => x.BookId)
+                              .OrderByDescending(y => y.Count())
+                              .Select(g => new { BookId = g.Key, Count = g.Count() })
+                              .FirstOrDefault();
+            return mostBorrowedBook.BookId;
+  
         }
     }
 }

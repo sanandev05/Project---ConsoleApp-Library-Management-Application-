@@ -14,7 +14,8 @@ namespace Project___ConsoleApp__Library_Management_Application_
     {
         static void Main(string[] args)
         {
-            ReturnBook();
+           LoanItemService loanItemService = new LoanItemService();
+            loanItemService.PrintBorrowersLoansInfo();
         }
         static void AuthorActions(int cmd)
         {
@@ -73,6 +74,7 @@ namespace Project___ConsoleApp__Library_Management_Application_
         static void BookActions(int cmd)
         {
             IBookService bookService = new BookService();
+            IAuthorService authorService = new AuthorService();
             switch (cmd)
             {
                 case 1:
@@ -87,7 +89,9 @@ namespace Project___ConsoleApp__Library_Management_Application_
                     break;
 
                 case 2:
-                    Console.WriteLine("Creating Book:\n");
+
+
+                    Console.WriteLine("Creating Book :\n");
 
                     Console.Write("Title of Book :");
                     string title = Console.ReadLine();
@@ -108,6 +112,7 @@ namespace Project___ConsoleApp__Library_Management_Application_
                         UpdatedAt = DateTime.Now,
                     };
                     bookService.Create(bookCreateDto);
+                    
                     break;
                 case 3:
                     Console.Write("Enter ID of Book to Modify:");
@@ -305,26 +310,28 @@ namespace Project___ConsoleApp__Library_Management_Application_
             int? getConfirmCmd = int.Parse(Console.ReadLine());
 
             ILoanService loanService = new LoanService();
-            LoanCreateDto loanCreateDto = new LoanCreateDto()
-            {
-                BorrowerId = getBorrowerWithId,
-                MustReturnDate = DateTime.Now.AddDays(15),
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now,
-                IsDeleted = false,
-                LoanDate = DateTime.Now,
+            
+                LoanCreateDto loanCreateDto = new LoanCreateDto()
+                {
+                    BorrowerId = getBorrowerWithId,
+                    MustReturnDate = DateTime.Now.AddDays(15),
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now,
+                    IsDeleted = false,
+                    LoanDate = DateTime.Now,
 
-            };
-            loanService.Create(loanCreateDto);
+                };
+                loanService.Create(loanCreateDto);
+            
             Console.WriteLine("GELE :" + loanService.GetAll().Find(x => x.BorrowerId == getBorrowerWithId).Id);
+            var ar = loanService.GetAll().FindAll(x => x.BorrowerId == getBorrowerWithId).OrderByDescending(x => x.Id).ToArray();
             LoanItemCreateDto loanItem = new LoanItemCreateDto()
             {
                 BookId = selectedBookId,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
                 IsDeleted = false,
-                LoanId = loanService.GetAll().Find(x => x.BorrowerId == getBorrowerWithId).Id,
-
+                LoanId = ar[0].Id,
             };
             loanItemService.Create(loanItem);
         }
@@ -343,6 +350,7 @@ namespace Project___ConsoleApp__Library_Management_Application_
                 }
             else { Console.WriteLine("There is nothing in the Borrowers List"); }
 
+            LoanGetDto getUpdatedForm;
             BorrowerGetDto getBorrower;
             do
             {
@@ -351,26 +359,51 @@ namespace Project___ConsoleApp__Library_Management_Application_
                 getBorrower = borrowerService.GetById(getBorrowerWithId);
 
             } while (getBorrower is null);
+            getUpdatedForm = loanService.GetAll().FirstOrDefault(x => x.BorrowerId == getBorrowerWithId);
 
-            var getUpdatedForm = loanService.GetAll().First(x => x.BorrowerId == getBorrowerWithId);
-
-            LoanUpdateDto updateLoan = new LoanUpdateDto()
+            //Check  borrower loaned a book 
+            if (getUpdatedForm is not null)
             {
-                ReturnDate = DateTime.Now,
-                BorrowerId = getUpdatedForm.BorrowerId,
-                IsDeleted = false,
-                LoanDate = getUpdatedForm.LoanDate,
-                UpdatedAt = DateTime.Now,
-                MustReturnDate = getUpdatedForm.MustReturnDate,
-            };
-            loanService.Update(getUpdatedForm.Id, updateLoan);
-            var loanItemIdToDelete = loanItemService.GetAll().FirstOrDefault(x=>x.LoanId== getUpdatedForm.Id).Id;
-            int returningBookID = loanItemService.GetAll().FirstOrDefault(x => x.LoanId == getUpdatedForm.Id).BookId;
+                LoanUpdateDto updateLoan = new LoanUpdateDto()
+                {
+                    ReturnDate = DateTime.Now,
+                    BorrowerId = getUpdatedForm.BorrowerId,
+                    IsDeleted = false,
+                    LoanDate = getUpdatedForm.LoanDate,
+                    UpdatedAt = DateTime.Now,
+                    MustReturnDate = getUpdatedForm.MustReturnDate,
+                };
+                loanService.Update(getUpdatedForm.Id, updateLoan);
+                var loanItemIdToDelete = loanItemService.GetAll().FirstOrDefault(x => x.LoanId == getUpdatedForm.Id).Id;
+                if (loanItemIdToDelete is 0) { Console.WriteLine("LoanItem didnot found"); }
+                int returningBookID = loanItemService.GetAll().FirstOrDefault(x => x.LoanId == getUpdatedForm.Id).BookId;
 
-            if (loanItemIdToDelete is 0) { Console.WriteLine(""); }
-            loanItemService.Delete(loanItemIdToDelete);
-            loanService.Delete(getUpdatedForm.Id);
-            Console.WriteLine($"You returned book ID: {returningBookID}");
+                if (loanItemIdToDelete is 0) { Console.WriteLine(""); }
+                loanItemService.Delete(loanItemIdToDelete);
+                loanService.Delete(getUpdatedForm.Id);
+                Console.WriteLine($"You returned book ID: {returningBookID}");
+            }
+            else
+            {
+                Console.WriteLine("You may be didnot borrow a book");
+            }
         }
+        static void PrintOverDueBorrowers()
+        {
+            ILoanService loanService = new LoanService();
+            var loaners = loanService.GetAll().FindAll(x => x.ReturnDate is null);
+            if (loaners.Count > 0)
+            {
+                foreach (var item in loaners)
+                {
+                    Console.WriteLine($"ID:{item.Id} BorrowerID:{item.BorrowerId} Borrower Name:{item.Borrower.Name} Must Return:{item.MustReturnDate} ");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Every one returned their books :)");
+            }
+        }
+       
     }
 }

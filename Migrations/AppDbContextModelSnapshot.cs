@@ -39,11 +39,11 @@ namespace Project___ConsoleApp__Library_Management_Application_.Migrations
 
             modelBuilder.Entity("Project___ConsoleApp__Library_Management_Application_.Models.Author", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -65,11 +65,11 @@ namespace Project___ConsoleApp__Library_Management_Application_.Migrations
 
             modelBuilder.Entity("Project___ConsoleApp__Library_Management_Application_.Models.Book", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -98,11 +98,11 @@ namespace Project___ConsoleApp__Library_Management_Application_.Migrations
 
             modelBuilder.Entity("Project___ConsoleApp__Library_Management_Application_.Models.Borrower", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -128,11 +128,11 @@ namespace Project___ConsoleApp__Library_Management_Application_.Migrations
 
             modelBuilder.Entity("Project___ConsoleApp__Library_Management_Application_.Models.Loan", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("BorrowerId")
                         .HasColumnType("int");
@@ -164,11 +164,11 @@ namespace Project___ConsoleApp__Library_Management_Application_.Migrations
 
             modelBuilder.Entity("Project___ConsoleApp__Library_Management_Application_.Models.LoanItem", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("BookId")
                         .HasColumnType("int");

@@ -17,7 +17,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Data
         public DbSet<LoanItem> LoanItems { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=DESKTOP-SANAN; Database=MiniProject-Libary_Managment; Trusted_Connection=True; TrustServerCertificate=True");
+            optionsBuilder.UseSqlServer(@"Server=DESKTOP-SANAN; Database=NEW-MiniProject-Libary_Managment; Trusted_Connection=True; TrustServerCertificate=True");
             base.OnConfiguring(optionsBuilder);
         }
     }

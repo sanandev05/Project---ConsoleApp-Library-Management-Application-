@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Project___ConsoleApp__Library_Management_Application_.DTOs.BorrowerDto;
 using Project___ConsoleApp__Library_Management_Application_.DTOs.LoanDto;
 using Project___ConsoleApp__Library_Management_Application_.DTOs.LoanItemDto;
 using Project___ConsoleApp__Library_Management_Application_.Exceptions.BorrowerExceptions;
@@ -38,11 +39,13 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
 
         public void Delete(int id)
         {
-            if (id < 1) throw new IdNotTrueException(" Id cant be zero and less than 0");
+            if (id < 1) { throw new IdNotTrueException(" Id cant be zero and less than 0"); }
+
             var dto = _loanItemRepository.GetByIdWithInclude(id);
 
             var loan = new LoanItem()
             {
+                Id = dto.Id,
                 BookId = dto.BookId,
                 LoanId = dto.LoanId,
                 Book = dto.Book,
@@ -63,7 +66,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
                 Id = x.Id,
                 BookId = x.BookId,
                 LoanId = x.LoanId,
-                Book = x.Book,
+                Book = x.Book,               
                 Loan = x.Loan,
                 IsDeleted = x.IsDeleted,
                 CreatedAt = x.CreatedAt,
@@ -114,6 +117,29 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
                 loanItemRepo.SaveChanges();
             }
             else throw new NullReferenceException("Not Found LoanItem");
+        }
+
+        public void PrintBorrowersLoansInfo()
+        {
+            IBorrowerRepository borrowerRepository = new BorrowerRepository();
+            ILoanItemRepository loanItemRepository = new LoanItemRepository();
+            IBookRepository bookRepository = new BookRepository();
+            List<Borrower> borrowers = borrowerRepository.GetAllWithInclude();
+            foreach (var item in borrowers)
+            {
+                Console.WriteLine($"\n{item.Id} {item.Name} Book Loans-> \n\n");
+                
+                foreach (var loans in loanItemRepository.GetAllWithInclude())
+                {
+                   
+                    if (loans.Loan.BorrowerId == item.Id)
+                    {
+                        Console.WriteLine($"{loans.Book.Title} {loans.Book.Description}");
+                
+                     
+                    }
+                }
+            }
         }
     }
 }
