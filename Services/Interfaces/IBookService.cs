@@ -11,7 +11,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Interfa
 {
     public interface IBookService
     {
-        public void Create(BookCreateDto entity);
+        public void Create(int authorID,BookCreateDto entity);
         public void Delete(int id);
         public void Update(int id,BookUpdateDto dto);
 

@@ -23,6 +23,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
             Author author = new Author()
             {
                 Name = dto.Name,
+              
             };
             authorRepository.Create(author);
             authorRepository.SaveChanges();

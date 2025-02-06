@@ -5,6 +5,8 @@ using Project___ConsoleApp__Library_Management_Application_.DTOs.BookDto;
 using Project___ConsoleApp__Library_Management_Application_.DTOs.BorrowerDto;
 using Project___ConsoleApp__Library_Management_Application_.DTOs.LoanDto;
 using Project___ConsoleApp__Library_Management_Application_.DTOs.LoanItemDto;
+using Project___ConsoleApp__Library_Management_Application_.Models;
+using Project___ConsoleApp__Library_Management_Application_.Repositories.Implementations;
 using Project___ConsoleApp__Library_Management_Application_.Services.Implementations;
 using Project___ConsoleApp__Library_Management_Application_.Services.Interfaces;
 
@@ -14,8 +16,7 @@ namespace Project___ConsoleApp__Library_Management_Application_
     {
         static void Main(string[] args)
         {
-           LoanItemService loanItemService = new LoanItemService();
-            loanItemService.PrintBorrowersLoansInfo();
+            BookActions(2);
         }
         static void AuthorActions(int cmd)
         {
@@ -73,7 +74,7 @@ namespace Project___ConsoleApp__Library_Management_Application_
         }
         static void BookActions(int cmd)
         {
-            IBookService bookService = new BookService();
+            BookService bookService = new BookService();
             IAuthorService authorService = new AuthorService();
             switch (cmd)
             {
@@ -90,18 +91,21 @@ namespace Project___ConsoleApp__Library_Management_Application_
 
                 case 2:
 
-
+                    AuthorRepository authorRepository = new AuthorRepository();
                     Console.WriteLine("Creating Book :\n");
 
-                    Console.Write("Title of Book :");
+                    Console.Write("Title of the Book :");
                     string title = Console.ReadLine();
 
-                    Console.Write("Description of Book :");
+                    Console.Write("Description of the Book :");
                     string description = Console.ReadLine();
 
-                    Console.Write("Publish Year of Book :");
+                    Console.Write("Publish Year of the Book :");
                     int publishYear = int.Parse(Console.ReadLine());
 
+                    Console.Write("Author Id of the Book:");
+                    int authorId = int.Parse(Console.ReadLine());
+                    var author= authorRepository.GetById(authorId);
                     BookCreateDto bookCreateDto = new BookCreateDto()
                     {
                         Title = title,
@@ -110,9 +114,11 @@ namespace Project___ConsoleApp__Library_Management_Application_
                         PublishYear = publishYear,
                         CreatedAt = DateTime.Now,
                         UpdatedAt = DateTime.Now,
+                        Authors= new List<Author>() { author }
+
                     };
-                    bookService.Create(bookCreateDto);
-                    
+                    bookService.Create(authorId, bookCreateDto);
+
                     break;
                 case 3:
                     Console.Write("Enter ID of Book to Modify:");
@@ -310,19 +316,19 @@ namespace Project___ConsoleApp__Library_Management_Application_
             int? getConfirmCmd = int.Parse(Console.ReadLine());
 
             ILoanService loanService = new LoanService();
-            
-                LoanCreateDto loanCreateDto = new LoanCreateDto()
-                {
-                    BorrowerId = getBorrowerWithId,
-                    MustReturnDate = DateTime.Now.AddDays(15),
-                    CreatedAt = DateTime.Now,
-                    UpdatedAt = DateTime.Now,
-                    IsDeleted = false,
-                    LoanDate = DateTime.Now,
 
-                };
-                loanService.Create(loanCreateDto);
-            
+            LoanCreateDto loanCreateDto = new LoanCreateDto()
+            {
+                BorrowerId = getBorrowerWithId,
+                MustReturnDate = DateTime.Now.AddDays(15),
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now,
+                IsDeleted = false,
+                LoanDate = DateTime.Now,
+
+            };
+            loanService.Create(loanCreateDto);
+
             Console.WriteLine("GELE :" + loanService.GetAll().Find(x => x.BorrowerId == getBorrowerWithId).Id);
             var ar = loanService.GetAll().FindAll(x => x.BorrowerId == getBorrowerWithId).OrderByDescending(x => x.Id).ToArray();
             LoanItemCreateDto loanItem = new LoanItemCreateDto()
@@ -404,6 +410,55 @@ namespace Project___ConsoleApp__Library_Management_Application_
                 Console.WriteLine("Every one returned their books :)");
             }
         }
-       
+        static void FilterBooksByTitle()
+        {
+            IBookService bookService = new BookService();
+            List<string> bookTitles = bookService.GetAll().Select(x => x.Title).ToList();
+            string input;
+            Console.WriteLine("If you wanna exit , enter 0\n");
+            do
+            {
+                Console.Write("Serach:");
+                input = Console.ReadLine().Trim();
+
+                string search = bookTitles.FirstOrDefault(x => x.Contains(input));
+                if (string.IsNullOrWhiteSpace(search) == false)
+                {
+                    Console.WriteLine("Result:" + search + "\n");
+                }
+                else if (string.IsNullOrWhiteSpace(search) && input != "0")
+                {
+                    Console.WriteLine("Book Not Found\n");
+                }
+
+            } while (input.Trim() != "0");
+        }
+
+        /*  static void FilterBooksByAuthor()
+          {
+              IBookService bookService = new BookService();
+              var bookAuthors = bookService.GetAll();
+
+              string authorName;
+              Console.WriteLine("If you wanna exit , enter 0\n");
+              do
+              {
+                  Console.Write("Serach:");
+                  authorName = Console.ReadLine().Trim();
+
+                  string search;
+                  if (string.IsNullOrWhiteSpace(search) == false)
+                  {
+                      Console.WriteLine("Result:" + search + "\n");
+                  }
+                  else if (string.IsNullOrWhiteSpace(search) && authorName != "0")
+                  {
+                      Console.WriteLine("Book Not Found\n");
+                  }
+
+              } while (input.Trim() != "0");
+          }*/
+
+
     }
 }
