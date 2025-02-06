@@ -48,7 +48,8 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
                 CreatedAt = x.CreatedAt,
                 Id = x.Id,
                 IsDeleted = x.IsDeleted,
-                UpdatedAt = x.UpdatedAt
+                UpdatedAt = x.UpdatedAt,
+                Books = x.Books,
             }).ToList();
         }
 

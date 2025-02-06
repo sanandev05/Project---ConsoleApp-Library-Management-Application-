@@ -5,6 +5,7 @@ using Project___ConsoleApp__Library_Management_Application_.DTOs.BookDto;
 using Project___ConsoleApp__Library_Management_Application_.DTOs.BorrowerDto;
 using Project___ConsoleApp__Library_Management_Application_.DTOs.LoanDto;
 using Project___ConsoleApp__Library_Management_Application_.DTOs.LoanItemDto;
+using Project___ConsoleApp__Library_Management_Application_.Exceptions.BookExceptions;
 using Project___ConsoleApp__Library_Management_Application_.Models;
 using Project___ConsoleApp__Library_Management_Application_.Repositories.Implementations;
 using Project___ConsoleApp__Library_Management_Application_.Services.Implementations;
@@ -16,7 +17,7 @@ namespace Project___ConsoleApp__Library_Management_Application_
     {
         static void Main(string[] args)
         {
-            BookActions(2);
+            ReturnBook();
         }
         static void AuthorActions(int cmd)
         {
@@ -34,36 +35,80 @@ namespace Project___ConsoleApp__Library_Management_Application_
                     else Console.WriteLine("There is nothing in the Authors List");
                     break;
                 case 2:
-                    Console.WriteLine("Creating Author:\n");
-                    Console.Write("Name of Author :");
-                    string name = Console.ReadLine();
-                    AuthorCreateDto authorCreateDto = new AuthorCreateDto()
+                    try
                     {
-                        Name = name,
-                        IsDeleted = false,
-                        CreatedAt = DateTime.Now,
-                        UpdatedAt = DateTime.Now,
-                    };
-                    authorService.Create(authorCreateDto);
+                        Console.WriteLine("Creating Author:\n");
+                        Console.Write("Name of Author :");
+                        string name = Console.ReadLine();
+                        AuthorCreateDto authorCreateDto = new AuthorCreateDto()
+                        {
+                            Name = name,
+                            IsDeleted = false,
+                            CreatedAt = DateTime.Now,
+                            UpdatedAt = DateTime.Now,
+                        };
+                        authorService.Create(authorCreateDto);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"Something went wrong .Error message:{e.Message}. Try again");
+                    }
                     break;
                 case 3:
-                    Console.Write("Enter the ID:");
-                    int id = int.Parse(Console.ReadLine());
-                    Console.Write("Enter the new Name:");
-                    string updateName = Console.ReadLine();
-                    AuthorUpdateDto authorUpdateDto = new AuthorUpdateDto()
+
+                wrongFormat:
+                    int id;
+                    try
                     {
-                        Name = updateName,
-                        IsDeleted = false,
-                        UpdatedAt = DateTime.Now,
-                    };
-                    authorService.Update(id, authorUpdateDto);
+                        Console.Write("Enter the ID to Modify Author:");
+                        id = int.Parse(Console.ReadLine());
+                    }
+                    catch (FormatException)
+                    {
+                        Console.WriteLine("Write in valid format");
+                        goto wrongFormat;
+                    }
+                    try
+                    {
+                        Console.Write("Enter the new Name:");
+                        string updateName = Console.ReadLine();
+                        AuthorUpdateDto authorUpdateDto = new AuthorUpdateDto()
+                        {
+                            Name = updateName,
+                            IsDeleted = false,
+                            UpdatedAt = DateTime.Now,
+
+                        };
+
+                        authorService.Update(id, authorUpdateDto);
+
+                    }
+                    catch (BookPublishedYearNotTrueException e)
+                    {
+                        goto wrongFormat;
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"Something went wrong .Error message:{e.Message}. Try again");
+                        goto wrongFormat;
+                    }
+
                     break;
                 case 4:
                     Console.WriteLine("Deleting an Author:\n");
+
+                wrongFormat2:
                     Console.Write("Enter the ID Correctly:");
-                    int Id = int.Parse(Console.ReadLine());
-                    authorService.Delete(Id);
+                    try
+                    {
+                        int Id = int.Parse(Console.ReadLine());
+                        authorService.Delete(Id);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"Something went wrong .Error message:{e.Message}. Try again");
+                        goto wrongFormat2;
+                    }
                     break;
                 case 0:
                     // WRITE 
@@ -99,13 +144,35 @@ namespace Project___ConsoleApp__Library_Management_Application_
 
                     Console.Write("Description of the Book :");
                     string description = Console.ReadLine();
+                wrongFormat:
+                    int publishYear;
+                    try
+                    {
+                        Console.Write("Publish Year of the Book :");
+                        publishYear = int.Parse(Console.ReadLine());
+                    }
+                    catch (FormatException)
+                    {
+                        Console.WriteLine("Write in valid format");
+                        goto wrongFormat;
+                    }
 
-                    Console.Write("Publish Year of the Book :");
-                    int publishYear = int.Parse(Console.ReadLine());
 
-                    Console.Write("Author Id of the Book:");
-                    int authorId = int.Parse(Console.ReadLine());
-                    var author= authorRepository.GetById(authorId);
+
+                wrongFormat5:
+                    int authorId;
+                    try
+                    {
+                        Console.Write("Author Id of the Book:");
+                        authorId = int.Parse(Console.ReadLine());
+
+                    }
+                    catch (FormatException)
+                    {
+                        Console.WriteLine("Write in valid format");
+                        goto wrongFormat5;
+                    }
+                    var author = authorRepository.GetById(authorId);
                     BookCreateDto bookCreateDto = new BookCreateDto()
                     {
                         Title = title,
@@ -114,40 +181,80 @@ namespace Project___ConsoleApp__Library_Management_Application_
                         PublishYear = publishYear,
                         CreatedAt = DateTime.Now,
                         UpdatedAt = DateTime.Now,
-                        Authors= new List<Author>() { author }
+                        Authors = new List<Author>() { author }
 
                     };
                     bookService.Create(authorId, bookCreateDto);
 
                     break;
                 case 3:
-                    Console.Write("Enter ID of Book to Modify:");
-                    int ID = int.Parse(Console.ReadLine());
-
-                    Console.Write("New Title of Book :");
-                    string updateTitle = Console.ReadLine();
-
-                    Console.Write("New Description of Book :");
-                    string updatedDesc = Console.ReadLine();
-
-                    Console.Write("New Publish Year of Book :");
-                    int updatedPublishYear = int.Parse(Console.ReadLine());
-
-                    BookUpdateDto updateBookDto = new BookUpdateDto()
+                wrongFormat2:
+                    int ID;
+                    try
                     {
-                        Title = updateTitle,
-                        IsDeleted = false,
-                        Description = updatedDesc,
-                        PublishYear = updatedPublishYear,
-                        UpdatedAt = DateTime.Now,
-                    };
-                    bookService.Update(ID, updateBookDto);
+                        Console.Write("Enter ID of Book to Modify:");
+                        ID = int.Parse(Console.ReadLine());
+
+
+
+                        Console.Write("New Title of Book :");
+                        string updateTitle = Console.ReadLine();
+
+                        Console.Write("New Description of Book :");
+                        string updatedDesc = Console.ReadLine();
+
+
+                        Console.Write("New Publish Year of Book :");
+                        int updatedPublishYear;
+
+                        updatedPublishYear = int.Parse(Console.ReadLine());
+
+
+
+                        BookUpdateDto updateBookDto = new BookUpdateDto()
+                        {
+                            Title = updateTitle,
+                            IsDeleted = false,
+                            Description = updatedDesc,
+                            PublishYear = updatedPublishYear,
+                            UpdatedAt = DateTime.Now,
+
+                        };
+                        bookService.Update(ID, updateBookDto);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Try agian. Error message:{ex.Message}");
+                        goto wrongFormat2;
+                    }
                     break;
                 case 4:
-                    Console.WriteLine("Deleting an Author:\n");
-                    Console.Write("Enter the ID Correctly:");
-                    int Id = int.Parse(Console.ReadLine());
-                    bookService.Delete(Id);
+                    Console.WriteLine("Deleting an Book:\n");
+                wrongFormat4:
+                    int Id = 0;
+                    try
+                    {
+                        Console.Write("Enter the ID Correctly:");
+                        Id = int.Parse(Console.ReadLine());
+
+                    }
+                    catch (FormatException)
+                    {
+                        Console.WriteLine("Write in valid format");
+                        goto wrongFormat4;
+                    }
+
+                    try
+                    {
+                        bookService.Delete(Id);
+
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"Something went wrong .Error message:{e.Message}. Try again");
+                        goto wrongFormat4;
+                    }
+
                     break;
                 case 0:
                     // WRITE 
@@ -192,29 +299,59 @@ namespace Project___ConsoleApp__Library_Management_Application_
                     borrowerService.Create(borrowerCreateDto);
                     break;
                 case 3:
-                    Console.Write("Enter ID of Borrower to Modify:");
-                    int ID = int.Parse(Console.ReadLine());
-
-                    Console.Write("New Name of the Borrower :");
-                    string updatedName = Console.ReadLine();
-
-                    Console.Write("New Email of the Borrower :");
-                    string updatedEmail = Console.ReadLine();
-
-                    BorrowerUpdateDto borrowerUpdateDto = new BorrowerUpdateDto()
+                wrongFormat:
+                    int ID;
+                    try
                     {
-                        Name = updatedName,
-                        IsDeleted = false,
-                        Email = updatedEmail,
-                        UpdatedAt = DateTime.Now.AddHours(4),
-                    };
-                    borrowerService.Update(ID, borrowerUpdateDto);
+                        Console.Write("Enter ID of Borrower to Modify:");
+                        ID = int.Parse(Console.ReadLine());
+
+                    }
+                    catch (FormatException)
+                    {
+                        Console.WriteLine("Write in valid format");
+                        goto wrongFormat;
+                    }
+                    try
+                    {
+                        Console.Write("New Name of the Borrower :");
+                        string updatedName = Console.ReadLine();
+
+                        Console.Write("New Email of the Borrower :");
+                        string updatedEmail = Console.ReadLine();
+
+                        BorrowerUpdateDto borrowerUpdateDto = new BorrowerUpdateDto()
+                        {
+                            Name = updatedName,
+                            IsDeleted = false,
+                            Email = updatedEmail,
+                            UpdatedAt = DateTime.Now.AddHours(4),
+                        };
+                        borrowerService.Update(ID, borrowerUpdateDto);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"Something went wrong .Error message:{e.Message}. Try again");
+                        goto wrongFormat;
+                    }
                     break;
                 case 4:
                     Console.WriteLine("Deleting an Borrower:\n");
-                    Console.Write("Enter the Borrower ID Correctly:");
-                    int Id = int.Parse(Console.ReadLine());
-                    borrowerService.Delete(Id);
+
+                wrongFormat2:
+                    int Id = 0;
+                    try
+                    {
+                        Console.Write("Enter the Borrower ID Correctly:");
+                        Id = int.Parse(Console.ReadLine());
+                        borrowerService.Delete(Id);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"Something went wrong .Error message:{e.Message}. Try again");
+                        goto wrongFormat2;
+                    }
+
                     break;
                 case 0:
                     // WRITE 
@@ -260,86 +397,96 @@ namespace Project___ConsoleApp__Library_Management_Application_
                     }
                 }
             }
-            int ID;
-            do
+            wrongFormat:
+            try
             {
-                Console.WriteLine("\nID to borrow:");
-                ID = int.Parse(Console.ReadLine());
+                int ID = 0;
+                int get = 0;
+                do
+                {
+                    Console.WriteLine("\nID to borrow:");
+                    ID = int.Parse(Console.ReadLine());
 
-            } while (availableBookIDs.FirstOrDefault(x => x == ID) != ID);
+                } while (availableBookIDs.FirstOrDefault(x => x == ID) != ID);
 
-            selectedBookId = ID;
-            int get;
-            do
-            {
-                Console.WriteLine("1- Add other book \n2-Add Borrower");
-                get = int.Parse(Console.ReadLine());
+                selectedBookId = ID;
+                do
+                {
+                    Console.WriteLine("1- Add other book \n2-Add Borrower");
+                    get = int.Parse(Console.ReadLine());
 
-            } while (get != 1 && get != 2);
+                } while (get != 1 && get != 2);
 
 
-            int getBorrowerWithId = 0;
+                int getBorrowerWithId = 0;
 
-            switch (get)
-            {
-                case 1:
-                    BorrowBook();
-                    return;
-                    break;
-                case 2:
-                    IBorrowerService borrowerService = new BorrowerService();
-                    Console.WriteLine("List of Borrowers:\n");
-                    var datas = borrowerService.GetAll();
-                    if (!datas.IsNullOrEmpty())
-                        foreach (var item in datas)
+
+                switch (get)
+                {
+                    case 1:
+                        BorrowBook();
+                        return;
+                        break;
+                    case 2:
+                        IBorrowerService borrowerService = new BorrowerService();
+                        Console.WriteLine("List of Borrowers:\n");
+                        var datas = borrowerService.GetAll();
+                        if (!datas.IsNullOrEmpty())
+                            foreach (var item in datas)
+                            {
+                                Console.WriteLine($"{item.Id} {item.Name} {item.Email} {item.CreatedAt} {item.UpdatedAt} {item.IsDeleted}");
+                            }
+                        else { Console.WriteLine("There is nothing in the Borrowers List"); }
+
+                        BorrowerGetDto getBorrower;
+                        do
                         {
-                            Console.WriteLine($"{item.Id} {item.Name} {item.Email} {item.CreatedAt} {item.UpdatedAt} {item.IsDeleted}");
-                        }
-                    else { Console.WriteLine("There is nothing in the Borrowers List"); }
+                            Console.WriteLine("Select Borrower Correctly:");
+                            getBorrowerWithId = int.Parse(Console.ReadLine());
+                            getBorrower = borrowerService.GetById(getBorrowerWithId);
 
-                    BorrowerGetDto getBorrower;
-                    do
-                    {
-                        Console.WriteLine("Select Borrower Correctly:");
-                        getBorrowerWithId = int.Parse(Console.ReadLine());
-                        getBorrower = borrowerService.GetById(getBorrowerWithId);
-
-                    } while (getBorrower is null);
+                        } while (getBorrower is null);
 
 
 
-                    break;
-                default:
-                    break;
+                        break;
+                    default:
+                        break;
+                }
+                Console.WriteLine("Enter 1 Confirm");
+                int? getConfirmCmd = int.Parse(Console.ReadLine());
+
+                ILoanService loanService = new LoanService();
+
+                LoanCreateDto loanCreateDto = new LoanCreateDto()
+                {
+                    BorrowerId = getBorrowerWithId,
+                    MustReturnDate = DateTime.Now.AddDays(15),
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now,
+                    IsDeleted = false,
+                    LoanDate = DateTime.Now,
+
+                };
+                loanService.Create(loanCreateDto);
+
+                Console.WriteLine("GELE :" + loanService.GetAll().Find(x => x.BorrowerId == getBorrowerWithId).Id);
+                var ar = loanService.GetAll().FindAll(x => x.BorrowerId == getBorrowerWithId).OrderByDescending(x => x.Id).ToArray();
+                LoanItemCreateDto loanItem = new LoanItemCreateDto()
+                {
+                    BookId = selectedBookId,
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now,
+                    IsDeleted = false,
+                    LoanId = ar[0].Id,
+                };
+                loanItemService.Create(loanItem);
             }
-            Console.WriteLine("Enter 1 Confirm");
-            int? getConfirmCmd = int.Parse(Console.ReadLine());
-
-            ILoanService loanService = new LoanService();
-
-            LoanCreateDto loanCreateDto = new LoanCreateDto()
+            catch (Exception e)
             {
-                BorrowerId = getBorrowerWithId,
-                MustReturnDate = DateTime.Now.AddDays(15),
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now,
-                IsDeleted = false,
-                LoanDate = DateTime.Now,
-
-            };
-            loanService.Create(loanCreateDto);
-
-            Console.WriteLine("GELE :" + loanService.GetAll().Find(x => x.BorrowerId == getBorrowerWithId).Id);
-            var ar = loanService.GetAll().FindAll(x => x.BorrowerId == getBorrowerWithId).OrderByDescending(x => x.Id).ToArray();
-            LoanItemCreateDto loanItem = new LoanItemCreateDto()
-            {
-                BookId = selectedBookId,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now,
-                IsDeleted = false,
-                LoanId = ar[0].Id,
-            };
-            loanItemService.Create(loanItem);
+                Console.WriteLine($"Something went wrong .Error message:{e.Message}. Try again");
+                goto wrongFormat;
+            }
         }
         static void ReturnBook()
         {
@@ -358,41 +505,50 @@ namespace Project___ConsoleApp__Library_Management_Application_
 
             LoanGetDto getUpdatedForm;
             BorrowerGetDto getBorrower;
-            do
-            {
-                Console.WriteLine("Select Borrower to Return Book :");
-                getBorrowerWithId = int.Parse(Console.ReadLine());
-                getBorrower = borrowerService.GetById(getBorrowerWithId);
-
-            } while (getBorrower is null);
-            getUpdatedForm = loanService.GetAll().FirstOrDefault(x => x.BorrowerId == getBorrowerWithId);
-
-            //Check  borrower loaned a book 
-            if (getUpdatedForm is not null)
-            {
-                LoanUpdateDto updateLoan = new LoanUpdateDto()
+            wrongFormat:
+            try {
+                do
                 {
-                    ReturnDate = DateTime.Now,
-                    BorrowerId = getUpdatedForm.BorrowerId,
-                    IsDeleted = false,
-                    LoanDate = getUpdatedForm.LoanDate,
-                    UpdatedAt = DateTime.Now,
-                    MustReturnDate = getUpdatedForm.MustReturnDate,
-                };
-                loanService.Update(getUpdatedForm.Id, updateLoan);
-                var loanItemIdToDelete = loanItemService.GetAll().FirstOrDefault(x => x.LoanId == getUpdatedForm.Id).Id;
-                if (loanItemIdToDelete is 0) { Console.WriteLine("LoanItem didnot found"); }
-                int returningBookID = loanItemService.GetAll().FirstOrDefault(x => x.LoanId == getUpdatedForm.Id).BookId;
+                    Console.WriteLine("Select Borrower to Return Book :");
+                    getBorrowerWithId = int.Parse(Console.ReadLine());
+                    getBorrower = borrowerService.GetById(getBorrowerWithId);
 
-                if (loanItemIdToDelete is 0) { Console.WriteLine(""); }
-                loanItemService.Delete(loanItemIdToDelete);
-                loanService.Delete(getUpdatedForm.Id);
-                Console.WriteLine($"You returned book ID: {returningBookID}");
+                } while (getBorrower is null);
+                getUpdatedForm = loanService.GetAll().FirstOrDefault(x => x.BorrowerId == getBorrowerWithId);
+
+                //Check  borrower loaned a book 
+                if (getUpdatedForm is not null)
+                {
+                    LoanUpdateDto updateLoan = new LoanUpdateDto()
+                    {
+                        ReturnDate = DateTime.Now,
+                        BorrowerId = getUpdatedForm.BorrowerId,
+                        IsDeleted = false,
+                        LoanDate = getUpdatedForm.LoanDate,
+                        UpdatedAt = DateTime.Now,
+                        MustReturnDate = getUpdatedForm.MustReturnDate,
+                    };
+                    loanService.Update(getUpdatedForm.Id, updateLoan);
+                    var loanItemIdToDelete = loanItemService.GetAll().FirstOrDefault(x => x.LoanId == getUpdatedForm.Id).Id;
+                    if (loanItemIdToDelete is 0) { Console.WriteLine("LoanItem didnot found"); }
+                    int returningBookID = loanItemService.GetAll().FirstOrDefault(x => x.LoanId == getUpdatedForm.Id).BookId;
+
+                    if (loanItemIdToDelete is 0) { Console.WriteLine(""); }
+                    loanItemService.Delete(loanItemIdToDelete);
+                    loanService.Delete(getUpdatedForm.Id);
+                    Console.WriteLine($"You returned book ID: {returningBookID}");
+                }
+                else
+                {
+                    Console.WriteLine("You may be didnot borrow a book");
+                }
             }
-            else
+            catch (Exception e)
             {
-                Console.WriteLine("You may be didnot borrow a book");
+                Console.WriteLine($"Something went wrong .Error message:{e.Message}. Try again");
+                goto wrongFormat;
             }
+
         }
         static void PrintOverDueBorrowers()
         {
@@ -433,31 +589,40 @@ namespace Project___ConsoleApp__Library_Management_Application_
 
             } while (input.Trim() != "0");
         }
+        static void FilterBooksByAuthor()
+        {
+            IBookService bookService = new BookService();
+            var books = bookService.GetAll();
+            string input;
 
-        /*  static void FilterBooksByAuthor()
-          {
-              IBookService bookService = new BookService();
-              var bookAuthors = bookService.GetAll();
+            Console.WriteLine("Search a book with Author Name . To get all books with authors just press enter.");
+            Console.WriteLine("If you wanna exit , enter 0\n");
+            do
+            {
+                Console.Write("Serach:");
+                input = Console.ReadLine().Trim();
 
-              string authorName;
-              Console.WriteLine("If you wanna exit , enter 0\n");
-              do
-              {
-                  Console.Write("Serach:");
-                  authorName = Console.ReadLine().Trim();
+                foreach (var book in books)
+                {
+                    foreach (var author in book.Authors)
+                    {
+                        if (author.Name.ToLower().Contains(input.ToLower()))
+                        {
+                            if (!string.IsNullOrEmpty(book.Title))
+                            {
+                                Console.WriteLine($"{author.Name} of Book(s):");
+                                Console.WriteLine($"{book.Title}\n");
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Not Found {author.Name}'s Book(s)");
+                            }
+                        }
+                    }
+                }
 
-                  string search;
-                  if (string.IsNullOrWhiteSpace(search) == false)
-                  {
-                      Console.WriteLine("Result:" + search + "\n");
-                  }
-                  else if (string.IsNullOrWhiteSpace(search) && authorName != "0")
-                  {
-                      Console.WriteLine("Book Not Found\n");
-                  }
-
-              } while (input.Trim() != "0");
-          }*/
+            } while (input.Trim() != "0");
+        }
 
 
     }

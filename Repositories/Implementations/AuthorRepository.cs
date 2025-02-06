@@ -20,7 +20,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Repositories.Imp
         }
         public List<Author> GetAllWithInclude()
         {
-            return _dbContext.Authors.Include(x=>x.Books).ToList();
+            return _dbContext.Authors.Include(x=>x.Books).ThenInclude(y=>y.Authors).ToList();
         }
   
   

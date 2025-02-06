@@ -26,7 +26,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
             if (string.IsNullOrWhiteSpace(entity.Title)
                 || string.IsNullOrWhiteSpace(entity.Description)) throw new BookTitleOrDescriptionIsNullOrWhiteSpaceException();
 
-            if (entity.PublishYear < 1000) throw new BookPublishedYearNotTrueException("Book Publish Year is not True");
+            if (entity.PublishYear < 1000) throw new BookPublishedYearNotTrueException("Book Publish Year can not be below than 1000");
 
             Book book = new Book()
             {
