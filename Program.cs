@@ -15,10 +15,15 @@ namespace Project___ConsoleApp__Library_Management_Application_
 {
     internal class Program
     {
+
         static void Main(string[] args)
         {
-            ReturnBook();
+
+            StartProgram();
         }
+
+
+
         static void AuthorActions(int cmd)
         {
             IAuthorService authorService = new AuthorService();
@@ -111,9 +116,10 @@ namespace Project___ConsoleApp__Library_Management_Application_
                     }
                     break;
                 case 0:
-                    // WRITE 
+                    StartProgram();   
                     break;
                 default:
+                    StartProgram();
                     break;
             }
         }
@@ -257,9 +263,10 @@ namespace Project___ConsoleApp__Library_Management_Application_
 
                     break;
                 case 0:
-                    // WRITE 
+                    StartProgram();
                     break;
                 default:
+                    StartProgram();
                     break;
             }
         }
@@ -354,9 +361,10 @@ namespace Project___ConsoleApp__Library_Management_Application_
 
                     break;
                 case 0:
-                    // WRITE 
+                    StartProgram();
                     break;
                 default:
+                    StartProgram();
                     break;
             }
         }
@@ -397,7 +405,7 @@ namespace Project___ConsoleApp__Library_Management_Application_
                     }
                 }
             }
-            wrongFormat:
+        wrongFormat:
             try
             {
                 int ID = 0;
@@ -470,7 +478,6 @@ namespace Project___ConsoleApp__Library_Management_Application_
                 };
                 loanService.Create(loanCreateDto);
 
-                Console.WriteLine("GELE :" + loanService.GetAll().Find(x => x.BorrowerId == getBorrowerWithId).Id);
                 var ar = loanService.GetAll().FindAll(x => x.BorrowerId == getBorrowerWithId).OrderByDescending(x => x.Id).ToArray();
                 LoanItemCreateDto loanItem = new LoanItemCreateDto()
                 {
@@ -505,8 +512,9 @@ namespace Project___ConsoleApp__Library_Management_Application_
 
             LoanGetDto getUpdatedForm;
             BorrowerGetDto getBorrower;
-            wrongFormat:
-            try {
+        wrongFormat:
+            try
+            {
                 do
                 {
                     Console.WriteLine("Select Borrower to Return Book :");
@@ -550,6 +558,19 @@ namespace Project___ConsoleApp__Library_Management_Application_
             }
 
         }
+        static void PrintMostBorrowedBook()
+        {
+            BookService bookService = new BookService();
+            try
+            {
+                var book = bookService.GetById(bookService.MostLoanedBookID());
+                Console.WriteLine($"ID:{book.Id} - Book title:{book.Title} - Book description: {book.Description} - Publish year: {book.PublishYear}");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Something went wrong. Error message:{e.Message}");
+            }
+        }
         static void PrintOverDueBorrowers()
         {
             ILoanService loanService = new LoanService();
@@ -565,6 +586,11 @@ namespace Project___ConsoleApp__Library_Management_Application_
             {
                 Console.WriteLine("Every one returned their books :)");
             }
+        }
+        static void PrintBorrowersLoanInfo()
+        {
+            LoanItemService loanItemService = new LoanItemService();
+            loanItemService.PrintBorrowersLoansInfo();
         }
         static void FilterBooksByTitle()
         {
@@ -623,7 +649,117 @@ namespace Project___ConsoleApp__Library_Management_Application_
 
             } while (input.Trim() != "0");
         }
+        private static void StartProgram()
+        {
+            Console.Clear();
+        wrong:
+            int input;
+            try
+            {
+                Console.WriteLine(InfoStrings.ActionsInfo);
 
+
+                Console.Write("Select one action with its number:");
+                input = int.Parse(Console.ReadLine());
+            }
+            catch (Exception e)
+            {
+                Console.Clear();
+                Console.WriteLine($"Something went wrong .Error message:{e.Message}. Try again\n");
+                goto wrong;
+            }
+
+            switch (input)
+            {
+                case 1:
+                gocase1:
+                    int inputCase1;
+                    try
+                    {
+                        Console.Clear();
+                        Console.WriteLine(InfoStrings.AuthorActionsInfo + "\n");
+                        Console.Write("Select:");
+                        inputCase1 = int.Parse(Console.ReadLine());
+
+                    }
+                    catch (Exception e)
+                    {
+                        Console.Clear();
+                        Console.WriteLine($"Something went wrong .Error message:{e.Message}. Try again\n");
+                        goto gocase1;
+                    }
+                    AuthorActions(inputCase1);
+                    break;
+                case 2:
+                gocase2:
+                    try
+                    {
+                        Console.Clear();
+                        Console.WriteLine(InfoStrings.BookActionsInfo + "\n");
+                        int inputCase2 = int.Parse(Console.ReadLine());
+
+                    }
+                    catch (Exception e)
+                    {
+                        Console.Clear();
+                        Console.WriteLine($"Something went wrong .Error message:{e.Message}. Try again\n");
+                        goto gocase2;
+                    }
+                    BookActions(input);
+                    break;
+                case 3:
+                    try
+                    {
+                        Console.Clear();
+                        Console.WriteLine(InfoStrings.BorrowerActionsInfo + "\n");
+                        BorrowerActions(int.Parse(Console.ReadLine()));
+
+                    }
+                    catch (Exception e)
+                    {
+                        Console.Clear();
+                        Console.WriteLine($"Something went wrong .Error message:{e.Message}. Try again\n");
+                        goto wrong;
+                    }
+
+                    break;
+                case 4:
+                    Console.Clear();
+                    BorrowBook();
+                    break;
+                case 5:
+                    Console.Clear();
+                    ReturnBook();
+                    break;
+                case 6:
+                    Console.Clear();
+                    PrintMostBorrowedBook();
+                    break;
+                case 7:
+                    Console.Clear();
+                    PrintOverDueBorrowers();
+                    break;
+                case 8:
+                    Console.Clear();
+                    PrintBorrowersLoanInfo();
+                    break;
+                case 9:
+                    Console.Clear();
+                    FilterBooksByTitle();
+                    break;
+                case 10:
+                    Console.Clear();
+                    FilterBooksByAuthor();
+                    break;
+                case 0:
+                    break;
+                default:
+                    Console.Clear();
+                    goto wrong;
+                    break;
+
+            }
+        }
 
     }
 }
