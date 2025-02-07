@@ -22,8 +22,15 @@ namespace Project___ConsoleApp__Library_Management_Application_.Repositories.Imp
         {
             return _dbContext.Authors.Include(x=>x.Books).ThenInclude(y=>y.Authors).ToList();
         }
-  
-  
+
+        public void SoftDeleteAuthor(int id)
+        {
+            var del = _dbContext.Authors.Include(x => x.Books).FirstOrDefault(x => x.Id == id);
+            del.IsDeleted = true;
+            del.Books.Clear();
+            _dbContext.Update(del);
+            _dbContext.SaveChanges();
+        }
 
     }
 }

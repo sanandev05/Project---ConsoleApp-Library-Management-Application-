@@ -94,7 +94,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
                 borrower.Email = dto.Email;
                 borrower.IsDeleted = dto.IsDeleted;
                 borrower.Loans = dto.Loans;
-
+                borrower.UpdatedAt = dto.UpdatedAt;
                 borrowerRepository.Commit(borrower);
                 borrowerRepository.SaveChanges();
             }

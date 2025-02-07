@@ -112,7 +112,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
                 loanItem.Book = dto.Book;
                 loanItem.Loan = dto.Loan;
                 loanItem.IsDeleted = dto.IsDeleted;
-
+                loanItem.UpdatedAt = dto.UpdatedAt;
                 loanItemRepo.Commit(loanItem);
                 loanItemRepo.SaveChanges();
             }

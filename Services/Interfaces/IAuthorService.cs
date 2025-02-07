@@ -11,7 +11,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.DTOs
     public interface IAuthorService
     {
         public void Create(AuthorCreateDto dto);
-        public void Delete(int id);
+        public void SoftDeleteAuthor(int id);
         public void Update(int id,AuthorUpdateDto dto);
         AuthorGetDto GetById(int id);
         List<AuthorGetDto> GetAll();

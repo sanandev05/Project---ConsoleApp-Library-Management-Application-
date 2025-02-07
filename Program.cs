@@ -18,7 +18,6 @@ namespace Project___ConsoleApp__Library_Management_Application_
 
         static void Main(string[] args)
         {
-
             StartProgram();
         }
 
@@ -68,7 +67,7 @@ namespace Project___ConsoleApp__Library_Management_Application_
                         Console.Write("Enter the ID to Modify Author:");
                         id = int.Parse(Console.ReadLine());
                     }
-                    catch (FormatException)
+                    catch (Exception)
                     {
                         Console.WriteLine("Write in valid format");
                         goto wrongFormat;
@@ -106,8 +105,8 @@ namespace Project___ConsoleApp__Library_Management_Application_
                     Console.Write("Enter the ID Correctly:");
                     try
                     {
-                        int Id = int.Parse(Console.ReadLine());
-                        authorService.Delete(Id);
+                        int Id = int.Parse(Console.ReadLine());                   
+                        authorService.SoftDeleteAuthor(Id);
                     }
                     catch (Exception e)
                     {
@@ -116,7 +115,7 @@ namespace Project___ConsoleApp__Library_Management_Application_
                     }
                     break;
                 case 0:
-                    StartProgram();   
+                    StartProgram();
                     break;
                 default:
                     StartProgram();
@@ -142,22 +141,34 @@ namespace Project___ConsoleApp__Library_Management_Application_
 
                 case 2:
 
-                    AuthorRepository authorRepository = new AuthorRepository();
                     Console.WriteLine("Creating Book :\n");
+                    string title;
+                    do
+                    {
+                        Console.Write("Title of the Book :");
+                        title = Console.ReadLine();
 
-                    Console.Write("Title of the Book :");
-                    string title = Console.ReadLine();
+                    } while (string.IsNullOrWhiteSpace(title));
+                    string description;
+                    do
+                    {
+                        Console.Write("Description of the Book :");
+                        description = Console.ReadLine();
 
-                    Console.Write("Description of the Book :");
-                    string description = Console.ReadLine();
+                    } while (string.IsNullOrWhiteSpace(description));
+
                 wrongFormat:
                     int publishYear;
                     try
                     {
-                        Console.Write("Publish Year of the Book :");
-                        publishYear = int.Parse(Console.ReadLine());
+                        do
+                        {
+                            Console.Write("Publish Year of the Book :");
+                            publishYear = int.Parse(Console.ReadLine());
+                        } while (publishYear < 1000 || publishYear > DateTime.Now.Year);
+
                     }
-                    catch (FormatException)
+                    catch (Exception)
                     {
                         Console.WriteLine("Write in valid format");
                         goto wrongFormat;
@@ -166,19 +177,39 @@ namespace Project___ConsoleApp__Library_Management_Application_
 
 
                 wrongFormat5:
+
                     int authorId;
                     try
                     {
-                        Console.Write("Author Id of the Book:");
-                        authorId = int.Parse(Console.ReadLine());
+                        do
+                        {
+                            Console.Write("Author Id of the Book:");
+                            authorId = int.Parse(Console.ReadLine());
+
+                        } while (authorId < 1 && authorService.GetById(authorId) is null);
 
                     }
-                    catch (FormatException)
+                    catch (Exception)
                     {
                         Console.WriteLine("Write in valid format");
                         goto wrongFormat5;
                     }
-                    var author = authorRepository.GetById(authorId);
+
+                    while (authorService.GetById(authorId) is null)
+                    {
+                        goto wrongFormat5;
+
+                    }
+                    var author = authorService.GetById(authorId);
+                    Author author1 = new Author()
+                    {
+                        Id = authorId,
+                        Name = author.Name,
+                        Books = author.Books,
+                        CreatedAt = author.CreatedAt,
+                        UpdatedAt = author.UpdatedAt,
+                        IsDeleted = author.IsDeleted,
+                    };
                     BookCreateDto bookCreateDto = new BookCreateDto()
                     {
                         Title = title,
@@ -187,7 +218,7 @@ namespace Project___ConsoleApp__Library_Management_Application_
                         PublishYear = publishYear,
                         CreatedAt = DateTime.Now,
                         UpdatedAt = DateTime.Now,
-                        Authors = new List<Author>() { author }
+                        Authors = new List<Author>() { author1 }
 
                     };
                     bookService.Create(authorId, bookCreateDto);
@@ -199,21 +230,39 @@ namespace Project___ConsoleApp__Library_Management_Application_
                     try
                     {
                         Console.Write("Enter ID of Book to Modify:");
-                        ID = int.Parse(Console.ReadLine());
+                        do
+                        {
+                            ID = int.Parse(Console.ReadLine());
+
+                        } while (ID < 1 || bookService.GetById(ID) is null);
 
 
+                        string updateTitle;
+                        do
+                        {
+                            Console.Write("New Title of Book :");
+                            updateTitle = Console.ReadLine();
 
-                        Console.Write("New Title of Book :");
-                        string updateTitle = Console.ReadLine();
+                        } while (string.IsNullOrEmpty(updateTitle));
 
-                        Console.Write("New Description of Book :");
-                        string updatedDesc = Console.ReadLine();
+                        string updatedDesc;
+                        do
+                        {
+                            Console.Write("New Description of Book :");
+                            updatedDesc = Console.ReadLine();
 
+                        } while (string.IsNullOrEmpty(updatedDesc));
 
-                        Console.Write("New Publish Year of Book :");
                         int updatedPublishYear;
+                        do
+                        {
 
-                        updatedPublishYear = int.Parse(Console.ReadLine());
+                            Console.Write("New Publish Year of Book :");
+
+                            updatedPublishYear = int.Parse(Console.ReadLine());
+
+                        } while (updatedPublishYear < 1000 || updatedPublishYear > DateTime.Now.Year);
+
 
 
 
@@ -235,16 +284,19 @@ namespace Project___ConsoleApp__Library_Management_Application_
                     }
                     break;
                 case 4:
-                    Console.WriteLine("Deleting an Book:\n");
+                    Console.WriteLine("Deleting a Book:\n");
                 wrongFormat4:
                     int Id = 0;
                     try
                     {
-                        Console.Write("Enter the ID Correctly:");
-                        Id = int.Parse(Console.ReadLine());
+                        do
+                        {
+                            Console.Write("Enter the ID Correctly:");
+                            Id = int.Parse(Console.ReadLine());
+                        } while (Id < 1 || bookService.GetById(Id) is null);
 
                     }
-                    catch (FormatException)
+                    catch (Exception)
                     {
                         Console.WriteLine("Write in valid format");
                         goto wrongFormat4;
@@ -252,7 +304,7 @@ namespace Project___ConsoleApp__Library_Management_Application_
 
                     try
                     {
-                        bookService.Delete(Id);
+                        bookService.SoftDeleteBook(Id);
 
                     }
                     catch (Exception e)
@@ -288,12 +340,20 @@ namespace Project___ConsoleApp__Library_Management_Application_
 
                 case 2:
                     Console.WriteLine("Creating Borrower:\n");
+                    string name;
+                    do
+                    {
+                        Console.Write("Name of the Borrower :");
+                        name = Console.ReadLine();
 
-                    Console.Write("Name of the Borrower :");
-                    string name = Console.ReadLine();
+                    } while (string.IsNullOrEmpty(name));
+                    string email;
+                    do
+                    {
+                        Console.Write("Email of Borrower :");
+                        email = Console.ReadLine();
 
-                    Console.Write("Email of Borrower :");
-                    string email = Console.ReadLine();
+                    } while (string.IsNullOrEmpty(email));
 
                     BorrowerCreateDto borrowerCreateDto = new BorrowerCreateDto()
                     {
@@ -310,29 +370,43 @@ namespace Project___ConsoleApp__Library_Management_Application_
                     int ID;
                     try
                     {
-                        Console.Write("Enter ID of Borrower to Modify:");
-                        ID = int.Parse(Console.ReadLine());
+                        do
+                        {
+                            Console.Write("Enter ID of Borrower to Modify:");
+                            ID = int.Parse(Console.ReadLine());
+
+                        } while (ID < 1 || borrowerService.GetById(ID) is null);
 
                     }
-                    catch (FormatException)
+                    catch (Exception)
                     {
                         Console.WriteLine("Write in valid format");
                         goto wrongFormat;
                     }
                     try
                     {
-                        Console.Write("New Name of the Borrower :");
-                        string updatedName = Console.ReadLine();
+                        string updatedName;
+                        do
+                        {
+                            Console.Write("New Name of the Borrower :");
+                            updatedName = Console.ReadLine();
 
-                        Console.Write("New Email of the Borrower :");
-                        string updatedEmail = Console.ReadLine();
+                        } while (string.IsNullOrWhiteSpace(updatedName));
+
+                        string updatedEmail;
+                        do
+                        {
+                            Console.Write("New Email of the Borrower :");
+                            updatedEmail = Console.ReadLine();
+
+                        } while (string.IsNullOrWhiteSpace(updatedEmail));
 
                         BorrowerUpdateDto borrowerUpdateDto = new BorrowerUpdateDto()
                         {
                             Name = updatedName,
                             IsDeleted = false,
                             Email = updatedEmail,
-                            UpdatedAt = DateTime.Now.AddHours(4),
+                            UpdatedAt = DateTime.Now,
                         };
                         borrowerService.Update(ID, borrowerUpdateDto);
                     }
@@ -343,15 +417,29 @@ namespace Project___ConsoleApp__Library_Management_Application_
                     }
                     break;
                 case 4:
-                    Console.WriteLine("Deleting an Borrower:\n");
-
+                    Console.WriteLine("Deleting a Borrower:\n");
+                    ILoanService loanService = new LoanService(); 
+                    ILoanItemService loanItemService = new LoanItemService();   
                 wrongFormat2:
                     int Id = 0;
                     try
                     {
-                        Console.Write("Enter the Borrower ID Correctly:");
-                        Id = int.Parse(Console.ReadLine());
+                        do
+                        {
+                            Console.Write("Enter the Borrower ID Correctly:");
+                            Id = int.Parse(Console.ReadLine());
+
+                        } while (Id < 1 || borrowerService.GetById(Id) is null);
                         borrowerService.Delete(Id);
+                        var loans=loanService.GetAll().Where(x => x.BorrowerId == Id);
+                        foreach (var item in loans)
+                        {
+                            loanService.Delete(item.Id);
+                            foreach (var loanItem in loanItemService.GetAll().Where(x=>x.LoanId==item.Id))
+                            {
+                                loanItemService.Delete(loanItem.Id);
+                            }
+                        }
                     }
                     catch (Exception e)
                     {
@@ -692,11 +780,12 @@ namespace Project___ConsoleApp__Library_Management_Application_
                     break;
                 case 2:
                 gocase2:
+                    int inputCase2;
                     try
                     {
                         Console.Clear();
                         Console.WriteLine(InfoStrings.BookActionsInfo + "\n");
-                        int inputCase2 = int.Parse(Console.ReadLine());
+                        inputCase2 = int.Parse(Console.ReadLine());
 
                     }
                     catch (Exception e)
@@ -705,7 +794,7 @@ namespace Project___ConsoleApp__Library_Management_Application_
                         Console.WriteLine($"Something went wrong .Error message:{e.Message}. Try again\n");
                         goto gocase2;
                     }
-                    BookActions(input);
+                    BookActions(inputCase2);
                     break;
                 case 3:
                     try
@@ -713,7 +802,6 @@ namespace Project___ConsoleApp__Library_Management_Application_
                         Console.Clear();
                         Console.WriteLine(InfoStrings.BorrowerActionsInfo + "\n");
                         BorrowerActions(int.Parse(Console.ReadLine()));
-
                     }
                     catch (Exception e)
                     {

@@ -37,6 +37,14 @@ namespace Project___ConsoleApp__Library_Management_Application_.Repositories.Imp
             _dbContext.Books.Add(book);
             _dbContext.SaveChanges();
         }
+        public void SoftDeleteBook(int id)
+        {
+            var del = _dbContext.Books.Include(x=>x.Authors).FirstOrDefault(x => x.Id == id);
+            del.IsDeleted = true;
+            del.Authors.Clear();
+            _dbContext.Update(del);
+            _dbContext.SaveChanges();
+        }
 
     }
 }

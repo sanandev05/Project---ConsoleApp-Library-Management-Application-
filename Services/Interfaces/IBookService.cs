@@ -12,7 +12,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Interfa
     public interface IBookService
     {
         public void Create(int authorID,BookCreateDto entity);
-        public void Delete(int id);
+        public void SoftDeleteBook(int id);
         public void Update(int id,BookUpdateDto dto);
 
         BookGetDto GetById(int id);

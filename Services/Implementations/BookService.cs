@@ -34,7 +34,7 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
                 Description = entity.Description,
                 CreatedAt = entity.CreatedAt,
                 UpdatedAt = entity.UpdatedAt,
-                PublishedYear = entity.PublishYear
+                PublishedYear = entity.PublishYear,                    
             };
             book.Authors = entity.Authors;
             book.IsDeleted = entity.IsDeleted;
@@ -44,11 +44,11 @@ namespace Project___ConsoleApp__Library_Management_Application_.Services.Impleme
 
         }
 
-        public void Delete(int id)
+        public void SoftDeleteBook(int id)
         {
             Book book = bookRepository.GetByIdWithInclude(id);
             if (book is null) throw new AuthorNotFoundException("Book Not Found");
-            bookRepository.Delete(book);
+            bookRepoAllFuncs.SoftDeleteBook(id);
             bookRepository.SaveChanges();
 
         }
