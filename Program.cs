@@ -37,6 +37,9 @@ namespace Project___ConsoleApp__Library_Management_Application_
                             Console.WriteLine($"{item.Id} {item.Name} {item.CreatedAt} {item.UpdatedAt} {item.IsDeleted}");
                         }
                     else Console.WriteLine("There is nothing in the Authors List");
+
+                    GetInputToGoToMainMenu();
+
                     break;
                 case 2:
                     try
@@ -57,6 +60,8 @@ namespace Project___ConsoleApp__Library_Management_Application_
                     {
                         Console.WriteLine($"Something went wrong .Error message:{e.Message}. Try again");
                     }
+                    GetInputToGoToMainMenu();
+
                     break;
                 case 3:
 
@@ -96,6 +101,7 @@ namespace Project___ConsoleApp__Library_Management_Application_
                         Console.WriteLine($"Something went wrong .Error message:{e.Message}. Try again");
                         goto wrongFormat;
                     }
+                    GetInputToGoToMainMenu();
 
                     break;
                 case 4:
@@ -105,7 +111,7 @@ namespace Project___ConsoleApp__Library_Management_Application_
                     Console.Write("Enter the ID Correctly:");
                     try
                     {
-                        int Id = int.Parse(Console.ReadLine());                   
+                        int Id = int.Parse(Console.ReadLine());
                         authorService.SoftDeleteAuthor(Id);
                     }
                     catch (Exception e)
@@ -113,6 +119,7 @@ namespace Project___ConsoleApp__Library_Management_Application_
                         Console.WriteLine($"Something went wrong .Error message:{e.Message}. Try again");
                         goto wrongFormat2;
                     }
+                    GetInputToGoToMainMenu();
                     break;
                 case 0:
                     StartProgram();
@@ -137,6 +144,7 @@ namespace Project___ConsoleApp__Library_Management_Application_
                             Console.WriteLine($"{item.Id} {item.Title} {item.Description} {item.PublishYear} {item.CreatedAt} {item.UpdatedAt} {item.IsDeleted}");
                         }
                     else Console.WriteLine("There is nothing in the Books List");
+                    GetInputToGoToMainMenu();
                     break;
 
                 case 2:
@@ -222,7 +230,7 @@ namespace Project___ConsoleApp__Library_Management_Application_
 
                     };
                     bookService.Create(authorId, bookCreateDto);
-
+                    GetInputToGoToMainMenu();
                     break;
                 case 3:
                 wrongFormat2:
@@ -282,6 +290,7 @@ namespace Project___ConsoleApp__Library_Management_Application_
                         Console.WriteLine($"Try agian. Error message:{ex.Message}");
                         goto wrongFormat2;
                     }
+                    GetInputToGoToMainMenu();
                     break;
                 case 4:
                     Console.WriteLine("Deleting a Book:\n");
@@ -312,7 +321,7 @@ namespace Project___ConsoleApp__Library_Management_Application_
                         Console.WriteLine($"Something went wrong .Error message:{e.Message}. Try again");
                         goto wrongFormat4;
                     }
-
+                    GetInputToGoToMainMenu();
                     break;
                 case 0:
                     StartProgram();
@@ -336,6 +345,7 @@ namespace Project___ConsoleApp__Library_Management_Application_
                             Console.WriteLine($"{item.Id} {item.Name} {item.Email} {item.CreatedAt} {item.UpdatedAt} {item.IsDeleted}");
                         }
                     else Console.WriteLine("There is nothing in the Borrowers List");
+                    GetInputToGoToMainMenu();
                     break;
 
                 case 2:
@@ -364,6 +374,7 @@ namespace Project___ConsoleApp__Library_Management_Application_
                         UpdatedAt = DateTime.Now,
                     };
                     borrowerService.Create(borrowerCreateDto);
+                    GetInputToGoToMainMenu();
                     break;
                 case 3:
                 wrongFormat:
@@ -415,11 +426,12 @@ namespace Project___ConsoleApp__Library_Management_Application_
                         Console.WriteLine($"Something went wrong .Error message:{e.Message}. Try again");
                         goto wrongFormat;
                     }
+                    GetInputToGoToMainMenu();
                     break;
                 case 4:
                     Console.WriteLine("Deleting a Borrower:\n");
-                    ILoanService loanService = new LoanService(); 
-                    ILoanItemService loanItemService = new LoanItemService();   
+                    ILoanService loanService = new LoanService();
+                    ILoanItemService loanItemService = new LoanItemService();
                 wrongFormat2:
                     int Id = 0;
                     try
@@ -431,11 +443,11 @@ namespace Project___ConsoleApp__Library_Management_Application_
 
                         } while (Id < 1 || borrowerService.GetById(Id) is null);
                         borrowerService.Delete(Id);
-                        var loans=loanService.GetAll().Where(x => x.BorrowerId == Id);
+                        var loans = loanService.GetAll().Where(x => x.BorrowerId == Id);
                         foreach (var item in loans)
                         {
                             loanService.Delete(item.Id);
-                            foreach (var loanItem in loanItemService.GetAll().Where(x=>x.LoanId==item.Id))
+                            foreach (var loanItem in loanItemService.GetAll().Where(x => x.LoanId == item.Id))
                             {
                                 loanItemService.Delete(loanItem.Id);
                             }
@@ -446,7 +458,7 @@ namespace Project___ConsoleApp__Library_Management_Application_
                         Console.WriteLine($"Something went wrong .Error message:{e.Message}. Try again");
                         goto wrongFormat2;
                     }
-
+                    GetInputToGoToMainMenu();
                     break;
                 case 0:
                     StartProgram();
@@ -582,6 +594,7 @@ namespace Project___ConsoleApp__Library_Management_Application_
                 Console.WriteLine($"Something went wrong .Error message:{e.Message}. Try again");
                 goto wrongFormat;
             }
+            GetInputToGoToMainMenu();
         }
         static void ReturnBook()
         {
@@ -603,6 +616,7 @@ namespace Project___ConsoleApp__Library_Management_Application_
         wrongFormat:
             try
             {
+                
                 do
                 {
                     Console.WriteLine("Select Borrower to Return Book :");
@@ -615,6 +629,33 @@ namespace Project___ConsoleApp__Library_Management_Application_
                 //Check  borrower loaned a book 
                 if (getUpdatedForm is not null)
                 {
+                    //BookService bookService = new BookService();
+                    //List<int> getLoansIdForBorrowerId = loanService.GetAll().Where(x => x.BorrowerId == getBorrowerWithId).Select(x => x.Id).ToList();
+                    //List<int> booksIds = new List<int>();
+                    //string selectBookID = "";
+                    //foreach (var loanItems in loanItemService.GetAll())
+                    //{
+                    //    foreach (var book in bookService.GetAll())
+                    //    {
+                    //        if (loanItems.BookId == book.Id && getLoansIdForBorrowerId.FirstOrDefault(x => x == loanItems.LoanId) is not 0)
+                    //        {
+                    //            Console.WriteLine($"{book.Id} {book.Title} {book.Description}");
+                    //            booksIds.Add(book.Id);
+                    //        }
+                    //    }
+                    //}
+                    //string getBookId = "";
+
+
+                    //while (string.IsNullOrEmpty(getBookId) || booksIds.FirstOrDefault(int.Parse(getBookId)) is  0){
+                    //    Console.WriteLine("Select Book With ID to Return:");
+                    //}
+                    //do
+                    //{
+                    //    Console.WriteLine("Select Your Borrowed Books To Return:");
+                    //    selectBookID = Console.ReadLine();
+
+                    //} while (selectBookID.Trim() != "0" || string.IsNullOrEmpty(selectBookID));
                     LoanUpdateDto updateLoan = new LoanUpdateDto()
                     {
                         ReturnDate = DateTime.Now,
@@ -628,11 +669,9 @@ namespace Project___ConsoleApp__Library_Management_Application_
                     var loanItemIdToDelete = loanItemService.GetAll().FirstOrDefault(x => x.LoanId == getUpdatedForm.Id).Id;
                     if (loanItemIdToDelete is 0) { Console.WriteLine("LoanItem didnot found"); }
                     int returningBookID = loanItemService.GetAll().FirstOrDefault(x => x.LoanId == getUpdatedForm.Id).BookId;
-
-                    if (loanItemIdToDelete is 0) { Console.WriteLine(""); }
                     loanItemService.Delete(loanItemIdToDelete);
-                    loanService.Delete(getUpdatedForm.Id);
-                    Console.WriteLine($"You returned book ID: {returningBookID}");
+
+                    Console.WriteLine($" returned book ID: {returningBookID}");
                 }
                 else
                 {
@@ -644,7 +683,7 @@ namespace Project___ConsoleApp__Library_Management_Application_
                 Console.WriteLine($"Something went wrong .Error message:{e.Message}. Try again");
                 goto wrongFormat;
             }
-
+            GetInputToGoToMainMenu();
         }
         static void PrintMostBorrowedBook()
         {
@@ -658,6 +697,7 @@ namespace Project___ConsoleApp__Library_Management_Application_
             {
                 Console.WriteLine($"Something went wrong. Error message:{e.Message}");
             }
+            GetInputToGoToMainMenu();
         }
         static void PrintOverDueBorrowers()
         {
@@ -674,11 +714,14 @@ namespace Project___ConsoleApp__Library_Management_Application_
             {
                 Console.WriteLine("Every one returned their books :)");
             }
+            GetInputToGoToMainMenu();
         }
+
         static void PrintBorrowersLoanInfo()
         {
             LoanItemService loanItemService = new LoanItemService();
             loanItemService.PrintBorrowersLoansInfo();
+            GetInputToGoToMainMenu();
         }
         static void FilterBooksByTitle()
         {
@@ -702,6 +745,7 @@ namespace Project___ConsoleApp__Library_Management_Application_
                 }
 
             } while (input.Trim() != "0");
+            GetInputToGoToMainMenu();
         }
         static void FilterBooksByAuthor()
         {
@@ -735,7 +779,10 @@ namespace Project___ConsoleApp__Library_Management_Application_
                     }
                 }
 
+
+
             } while (input.Trim() != "0");
+            GetInputToGoToMainMenu();
         }
         private static void StartProgram()
         {
@@ -847,7 +894,22 @@ namespace Project___ConsoleApp__Library_Management_Application_
                     break;
 
             }
+            GetInputToGoToMainMenu();
         }
+        static void GetInputToGoToMainMenu()
+        {
+            string getInput = "   ";
 
+            while (getInput.Trim() != "0" || string.IsNullOrEmpty(getInput))
+            {
+
+                Console.Write("\nPress 0 to go to main menu:");
+                getInput = Console.ReadLine();
+
+            }
+
+            if (getInput.Trim() == "0") StartProgram();
+            GetInputToGoToMainMenu();
+        }
     }
 }
